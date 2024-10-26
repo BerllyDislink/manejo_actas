@@ -25,8 +25,8 @@ class sesion_controller extends Controller
      $validator = Validator::make($request->all(),[
         'LUGAR' => 'required',
         'FECHA' => 'required|date',
-        'HORARIO_INICIO' => 'required|string',
-        'HORARIO_FINAL' => 'required|string',
+        'HORARIO_INICIO' => 'required|date_format:H:i',
+        'HORARIO_FINAL' => 'required|date_format:H:i',
         'PRESIDENTE' => 'required',
         'SECRETARIO' => 'required',
      ]);
