@@ -23,13 +23,12 @@ class sesion_controller extends Controller
 
     public function store(Request $request){
      $validator = Validator::make($request->all(),[
-        'IDSESION' => 'required',
         'LUGAR' => 'required',
         'FECHA' => 'required|date',
-        'HORARIO_INICIO' => 'required|date_format:Y-m-d H:i:s',
-        'HORARIO_FINAL' => 'required|date_format:Y-m-d H:i:s',
+        'HORARIO_INICIO' => 'required|string',
+        'HORARIO_FINAL' => 'required|string',
         'PRESIDENTE' => 'required',
-        'SECRETARIO' => 'required' 
+        'SECRETARIO' => 'required',
      ]);
      if($validator->fails()){
       $data = [
@@ -40,7 +39,6 @@ class sesion_controller extends Controller
       return response()->json($data,400);
      }
      $sesion = Sesion::create([
-        'IDSESION' =>$request ->IDSESION,
         'LUGAR' => $request ->LUGAR,
         'FECHA' => $request ->FECHA,
         'HORARIO_INICIO' => $request->HORARIO_INICIO,
