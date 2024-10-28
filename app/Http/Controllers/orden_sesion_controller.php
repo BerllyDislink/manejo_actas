@@ -85,7 +85,7 @@ class orden_sesion_controller extends Controller
         // Buscar y eliminar el acta asociada con la columna SESION_IDSESION
         $acta = Acta::where('SESION_IDSESION', $ID_ORDEN_SESION)->first();
         if ($acta) {
-            $acta->delete();
+           $acta->delete();
         }
     
         $ordensesion->delete();

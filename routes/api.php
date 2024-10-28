@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActaController;
 use App\Http\Controllers\sesion_controller;
+use App\Http\Controllers\orden_sesion_controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,17 +25,17 @@ Route::patch('/sesion/update/{IDSESION}',[sesion_controller::class, 'update_patc
 Route::delete('/sesion/delete/{IDSESION}',[sesion_controller::class, 'delete']);
 
 //CRUD Orden sesion
-Route::get('/orden_sesion/all',[sesion_controller::class, 'index']);
+Route::get('/orden_sesion/all',[orden_sesion_controller::class, 'index']);
 
-Route::get('/orden_sesion/{id}',[sesion_controller::class, 'show']);
+Route::get('/orden_sesion/{id}',[orden_sesion_controller::class, 'show']);
 
-Route::post('/orden_sesion/save',[sesion_controller::class, 'store']);
+Route::post('/orden_sesion/save',[orden_sesion_controller::class, 'store']);
 
-Route::put('/orden_sesion/update/{IDSESION}',[sesion_controller::class, 'update']);
+Route::put('/orden_sesion/update/{ID_ORDEN_SESION}',[orden_sesion_controller::class, 'update']);
 
-Route::patch('/orden_sesion/update/{IDSESION}',[sesion_controller::class, 'update_patch']);
+Route::patch('/orden_sesion/update/{ID_ORDEN_SESION}',[orden_sesion_controller::class, 'update_patch']);
 
-Route::delete('/orden_sesion/delete/{IDSESION}',[sesion_controller::class, 'delete']);
+Route::delete('/orden_sesion/delete/{ID_ORDEN_SESION}',[orden_sesion_controller::class, 'delete']);
 
 
 //CRUD Acta
