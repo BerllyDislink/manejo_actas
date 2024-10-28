@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
-class Acta extends Model
+class acta extends Model
 {
 	protected $table = 'actas';
 	protected $primaryKey = 'ID_ACTA';

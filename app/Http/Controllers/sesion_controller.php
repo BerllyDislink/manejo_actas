@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sesion;
+use App\Models\acta;
 use Illuminate\Support\Facades\Validator;
 
 class sesion_controller extends Controller
@@ -76,22 +77,32 @@ class sesion_controller extends Controller
         return response()->json($data,200);
     }
 
-    public function delete($IDSESION){
+    public function delete($IDSESION)
+    {
         $sesion = Sesion::find($IDSESION);
-        if(!$sesion){
-            $data = [
-                'message' => 'Sesion no encontrada',
+    
+        if (!$sesion) {
+            return response()->json([
+                'message' => 'Sesión no encontrada',
                 'status' => 404
-            ];
-            return response()->json($data,404);
+            ], 404);
         }
+    
+        // Buscar y eliminar el acta asociada con la columna SESION_IDSESION
+        $acta = Acta::where('SESION_IDSESION', $IDSESION)->first();
+        if ($acta) {
+            $acta->delete();
+        }
+    
         $sesion->delete();
-        $data = [
-            'message' => 'Sesión eliminada',
+    
+        return response()->json([
+            'message' => 'Sesión y acta eliminadas',
             'status' => 200
-        ];
-        return response()->json($data,200);
+        ], 200);
     }
+    
+    
 
     public function update(Request $request, $IDSESION){
         $sesion = sesion::find($IDSESION);

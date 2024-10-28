@@ -13,9 +13,15 @@ Route::get('/user', function (Request $request) {
 //CRUD sesion
 Route::get('/sesion/all',[sesion_controller::class, 'index']);
 
+Route::get('/sesion/{id}',[sesion_controller::class, 'show']);
+
 Route::post('/sesion/save',[sesion_controller::class, 'store']);
 
+Route::put('/sesion/update/{IDSESION}',[sesion_controller::class, 'update']);
 
+Route::patch('/sesion/update/{IDSESION}',[sesion_controller::class, 'update_patch']);
+
+Route::delete('/sesion/delete/{IDSESION}',[sesion_controller::class, 'delete']);
 
 //CRUD Acta
 
