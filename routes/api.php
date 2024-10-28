@@ -23,6 +23,20 @@ Route::patch('/sesion/update/{IDSESION}',[sesion_controller::class, 'update_patc
 
 Route::delete('/sesion/delete/{IDSESION}',[sesion_controller::class, 'delete']);
 
+//CRUD Orden sesion
+Route::get('/orden_sesion/all',[sesion_controller::class, 'index']);
+
+Route::get('/orden_sesion/{id}',[sesion_controller::class, 'show']);
+
+Route::post('/orden_sesion/save',[sesion_controller::class, 'store']);
+
+Route::put('/orden_sesion/update/{IDSESION}',[sesion_controller::class, 'update']);
+
+Route::patch('/orden_sesion/update/{IDSESION}',[sesion_controller::class, 'update_patch']);
+
+Route::delete('/orden_sesion/delete/{IDSESION}',[sesion_controller::class, 'delete']);
+
+
 //CRUD Acta
 
 Route::get('/acta/all',[ActaController::class, 'index']);
