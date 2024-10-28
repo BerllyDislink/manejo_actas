@@ -10,11 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Acta
- * 
- * @property int $NUM_ACTA
+ *
+ * @property int $ID_ACTA
  * @property string $ESTADO
  * @property int $SESION_IDSESION
- * 
+ *
  * @property Sesion $sesion
  *
  * @package App\Models
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 class Acta extends Model
 {
 	protected $table = 'actas';
-	protected $primaryKey = 'NUM_ACTA';
+	protected $primaryKey = 'ID_ACTA';
 	public $timestamps = false;
 
 	protected $casts = [
@@ -34,7 +34,8 @@ class Acta extends Model
 		'SESION_IDSESION'
 	];
 
-	public function sesion()
+
+    public function sesion()
 	{
 		return $this->belongsTo(Sesion::class, 'SESION_IDSESION');
 	}
