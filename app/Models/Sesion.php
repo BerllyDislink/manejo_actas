@@ -104,4 +104,7 @@ class Sesion extends Model
 	{
 		return $this->hasMany(Tarea::class, 'SESION_IDSESION');
 	}
+ 
+	
+
 }

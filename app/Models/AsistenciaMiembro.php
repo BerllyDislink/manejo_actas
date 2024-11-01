@@ -32,8 +32,10 @@ class AsistenciaMiembro extends Model
 	];
 
 	protected $fillable = [
-		'ESTADO_ASISTENCIA'
-	];
+        'SESSION_IDSESION', 
+        'MIEMBRO_IDMIEMBRO', 
+        'ESTADO_ASISTENCIA'
+    ];
 
 	public function miembro()
 	{
