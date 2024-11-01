@@ -4,6 +4,7 @@ use App\Http\Controllers\ActaController;
 use App\Http\Controllers\Participants_controller;
 use App\Http\Controllers\sesion_controller;
 use App\Http\Controllers\orden_sesion_controller;
+use App\Http\Controllers\Participants_controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -81,6 +82,7 @@ Route::post('/invitado', [Participants_controller::class, 'agregarInvitado']);
 Route::get('/sesion/{IDSESION}/invitado/{IDINVITADOS}/asistencia', [Participants_controller::class, 'obtenerAsistenciaInvitado']);
 Route::post('/sesion/{IDSESION}/invitado/{IDINVITADOS}/asistencia', [Participants_controller::class, 'registrarAsistencia']);
 
+
 // Agregar miembro
 Route::post('/miembro', [Participants_controller::class, 'agregarMiembro']);
 
@@ -88,6 +90,7 @@ Route::post('/miembro', [Participants_controller::class, 'agregarMiembro']);
 Route::get('/sesion/{IDSESION}/miembro/{IDMIEMBRO}/asistencia', [Participants_controller::class, 'obtenerAsistenciaMiembro']);
 Route::post('/sesion/{IDSESION}/miembro/{IDMIEMBRO}/asistencia', [Participants_controller::class, 'registrarAsistenciaMiembro']);
 
-
+//verificar quorum
+Route::get('/sesion/{IDSESION}/verificar-quorum', [Participants_controller::class, 'verificarQuorum']);
 
 

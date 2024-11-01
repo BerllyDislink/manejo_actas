@@ -158,9 +158,45 @@ public function registrarAsistencia(Request $request, $IDSESION, $IDINVITADOS)
     return response()->json(['mensaje' => 'Asistencia registrada con éxito.', 'asistencia' => $asistencia]);
 }
 
+public function verificarQuorum($IDSESION)
+{
+    // Obtener la sesión y verificar su existencia
+    $sesion = Sesion::findOrFail($IDSESION);
 
+    // Contar el total de miembros y invitados registrados para la sesión
+    $totalMiembros = Miembro::count();
+    $totalInvitados = Invitado::count();
 
+    // Contar la asistencia de miembros e invitados en la sesión
+    $miembrosAsistentes = $sesion->asistencia_miembros()
+                                  ->where('ESTADO_ASISTENCIA', 'Asistió')
+                                  ->count();
 
-    
-    
+    $invitadosAsistentes = $sesion->asistencia_invitados()
+                                   ->where('ESTADO_ASISTENCIA', 'Asistió')
+                                   ->count();
+
+    // Calcular el porcentaje de asistencia
+    $porcentajeMiembros = $totalMiembros > 0 ? ($miembrosAsistentes / $totalMiembros) * 100 : 0;
+    $porcentajeInvitados = $totalInvitados > 0 ? ($invitadosAsistentes / $totalInvitados) * 100 : 0;
+
+    // Calcular el quórum global (promedio de los dos grupos)
+    $quorum = ($porcentajeMiembros + $porcentajeInvitados) / 2;
+
+    // Verificar si el quórum es del 70% o más
+    $cumpleQuorum = $quorum >= 70;
+
+    return response()->json([
+        'mensaje' => $cumpleQuorum ? 'Quórum alcanzado.' : 'Quórum no alcanzado.',
+        'porcentaje_miembros' => $porcentajeMiembros,
+        'porcentaje_invitados' => $porcentajeInvitados,
+        'quorum' => $quorum,
+        'cumple_quorum' => $cumpleQuorum
+    ]);
 }
+}
+
+
+    
+    
+
