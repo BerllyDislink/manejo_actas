@@ -39,8 +39,6 @@ class ActaController extends Controller
             $createActa = Acta::create($request->validated());
             return response()->json($createActa,201);
         } catch (\Exception $e) {
-            \Log::error('Error al crear acta: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
 
             return response()->json([
                 'message' => 'Error al crear el acta',
@@ -84,7 +82,7 @@ class ActaController extends Controller
     public function update(UpdateActRequest $request,  $id)
     {
         if($id < 0){
-            return response()->json(['message'=>'id del acta a actualizar debe ser mayor que 0'],404);
+            return response()->json(['error' => 'id del acta a actualizar debe ser mayor que 0'],404);
         }
 
         try{

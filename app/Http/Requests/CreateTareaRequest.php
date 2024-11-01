@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateActaRequest extends FormRequest
+class CreateTareaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,18 +18,20 @@ class CreateActaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ESTADO' => 'required|in:aprobada,rechazada,pendiente',
-            'SESION_IDSESION' => 'required|exists:sesion,IDSESION',
+            "DESCRIPCION" => "required",
+            "FECHA_ENTREGA" => "required|date_format:Y-m-d",
+            "SESION_IDSESION" => "required|exists:sesion,IDSESION",
         ];
     }
 
     public function messages(): array
     {
         return [
-            'ESTADO.required' => 'Estado es requerido',
-            'ESTADO.in' => 'Estado debe ser un valor valido entre (aprobada, rechazada, pendiente)',
-            'SESION_IDSESION.required' => 'el id de la sesion es requerido',
-            'SESION_IDSESION.exists' => 'El id de la sesion no existe',
+            "DESCRIPCION.required" => "Debes proporcionar una descripcion para la tarea",
+            "FECHA_ENTREGA.date_format" => "La fecha de entrega debe tener el formato yyyy-mm-dd",
+            "FECHA_ENTREGA.required" => "Debes proporcionar una fecha de entrega para la tarea",
+            "SESION_IDSESION.required" => "Debes seleccionar una sesion para la tarea",
+            "SESION_IDSESION.exists" => "La sesion seleccionada no existe",
         ];
     }
 

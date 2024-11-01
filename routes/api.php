@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\ActaController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\sesion_controller;
 use App\Http\Controllers\orden_sesion_controller;
+use App\Http\Controllers\TareaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -10,6 +12,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+
+
+//CRUD Registro y login
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/profile', [AuthController::class, 'userProfile']);
+});
 
 //CRUD sesion
 Route::get('/sesion/all',[sesion_controller::class, 'index']);
@@ -50,4 +63,14 @@ Route::put('/acta/update/{id}',[ActaController::class, 'update']);
 
 Route::delete('acta/delete/{id}',[ActaController::class, 'destroy']);
 
+//CRUD Tareas
 
+Route::get('tarea/all', [TareaController::class, 'index']);
+
+Route::get('/tarea/{id}',[TareaController::class, 'show']);
+
+Route::post('/tarea/save', [TareaController::class, 'store']);
+
+Route::put('/tarea/update/{id}',[TareaController::class, 'update']);
+
+Route::delete('tarea/delete/{id}',[TareaController::class, 'destroy']);

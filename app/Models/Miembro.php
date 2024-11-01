@@ -8,14 +8,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use \Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Miembro
- * 
+ *
  * @property int $IDMIEMBRO
  * @property string $NOMBRE
  * @property string $CARGO
- * 
+ *
  * @property Collection|AsistenciaMiembro[] $asistencia_miembros
  * @property Collection|EncargadosTarea[] $encargados_tareas
  * @property Collection|Proposicione[] $proposiciones
@@ -30,7 +31,8 @@ class Miembro extends Model
 
 	protected $fillable = [
 		'NOMBRE',
-		'CARGO'
+		'CARGO',
+        'user_id'
 	];
 
 	public function asistencia_miembros()
@@ -47,4 +49,9 @@ class Miembro extends Model
 	{
 		return $this->hasMany(Proposicione::class, 'MIEMBRO_IDMIEMBRO');
 	}
+
+    public function users(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

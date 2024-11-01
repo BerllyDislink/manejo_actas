@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateActRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,24 +15,24 @@ class UpdateActRequest extends FormRequest
         return true;
     }
 
-
     public function rules(): array
     {
         return [
-            'ESTADO' => 'in:aprobada,rechazada,pendiente',
-            'SESION_IDSESION' => 'gt:0'
+            "email" => "required|email",
+            "password" => "required"
         ];
     }
 
     public function messages(): array
     {
         return [
-            'ESTADO.in' => 'Estado debe ser un valor valido entre (aprobada, rechazada, pendiente)',
-            'SESION_IDSESION.gt' => 'El ID_SESION debe ser mayor que 0'
+            "email.required" => "El email es obligatorio",
+            "email.email" => "El email debe ser un email",
+            "password.required" => "El password es obligatorio"
         ];
     }
 
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    public function failedValidation(Validator $validator)
     {
         throw new \Illuminate\Validation\ValidationException($validator,
             response()->json([
