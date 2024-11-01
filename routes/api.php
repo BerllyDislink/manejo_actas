@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ActaController;
-use App\Http\Controllers\Participants_controller;
 use App\Http\Controllers\sesion_controller;
 use App\Http\Controllers\orden_sesion_controller;
 use App\Http\Controllers\Participants_controller;
@@ -62,6 +61,8 @@ Route::post('/acta/save', [ActaController::class, 'store']);
 Route::put('/acta/update/{id}',[ActaController::class, 'update']);
 
 Route::delete('acta/delete/{id}',[ActaController::class, 'destroy']);
+
+Route::put('/acta/aprobar/{id}', [ActaController::class, 'aprobarActaAnterior']); 
 
 //CRUD Tareas
 
