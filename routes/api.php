@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActaController;
+use App\Http\Controllers\Participants_controller;
 use App\Http\Controllers\sesion_controller;
 use App\Http\Controllers\orden_sesion_controller;
 use Illuminate\Http\Request;
@@ -72,6 +73,7 @@ Route::post('/tarea/save', [TareaController::class, 'store']);
 Route::put('/tarea/update/{id}',[TareaController::class, 'update']);
 
 Route::delete('tarea/delete/{id}',[TareaController::class, 'destroy']);
+
 //Agregar invitados
 Route::post('/invitado', [Participants_controller::class, 'agregarInvitado']);
 
