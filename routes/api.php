@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\ActaController;
+use App\Http\Controllers\ParticipantesController;
 use App\Http\Controllers\sesion_controller;
 use App\Http\Controllers\orden_sesion_controller;
-use App\Http\Controllers\Participants_controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -77,21 +77,21 @@ Route::put('/tarea/update/{id}',[TareaController::class, 'update']);
 Route::delete('tarea/delete/{id}',[TareaController::class, 'destroy']);
 
 //Agregar invitados
-Route::post('/invitado', [Participants_controller::class, 'agregarInvitado']);
+Route::post('/invitado', [ParticipantesController::class, 'agregarInvitado']);
 
 //Obtener asistencia y crear estado de la asistencia de invitados
-Route::get('/sesion/{IDSESION}/invitado/{IDINVITADOS}/asistencia', [Participants_controller::class, 'obtenerAsistenciaInvitado']);
-Route::post('/sesion/{IDSESION}/invitado/{IDINVITADOS}/asistencia', [Participants_controller::class, 'registrarAsistencia']);
+Route::get('/sesion/{IDSESION}/invitado/{IDINVITADOS}/asistencia', [ParticipantesController::class, 'obtenerAsistenciaInvitado']);
+Route::post('/sesion/{IDSESION}/invitado/{IDINVITADOS}/asistencia', [ParticipantesController::class, 'registrarAsistencia']);
 
 
 // Agregar miembro
-Route::post('/miembro', [Participants_controller::class, 'agregarMiembro']);
+Route::post('/miembro', [ParticipantesController::class, 'agregarMiembro']);
 
 // Obtener asistencia de miembro y crear estado de la asistencia de miembros
-Route::get('/sesion/{IDSESION}/miembro/{IDMIEMBRO}/asistencia', [Participants_controller::class, 'obtenerAsistenciaMiembro']);
-Route::post('/sesion/{IDSESION}/miembro/{IDMIEMBRO}/asistencia', [Participants_controller::class, 'registrarAsistenciaMiembro']);
+Route::get('/sesion/{IDSESION}/miembro/{IDMIEMBRO}/asistencia', [ParticipantesController::class, 'obtenerAsistenciaMiembro']);
+Route::post('/sesion/{IDSESION}/miembro/{IDMIEMBRO}/asistencia', [ParticipantesController::class, 'registrarAsistenciaMiembro']);
 
 //verificar quorum
-Route::get('/sesion/{IDSESION}/verificar-quorum', [Participants_controller::class, 'verificarQuorum']);
+Route::get('/sesion/{IDSESION}/verificar-quorum', [ParticipantesController::class, 'verificarQuorum']);
 
 
