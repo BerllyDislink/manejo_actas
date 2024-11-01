@@ -32,8 +32,11 @@ class AsistenciaInvitado extends Model
 	];
 
 	protected $fillable = [
-		'ESTADO_ASISTENCIA'
+		'INIVITADO_IDINVITADO',
+		'SESION_IDSESION',
+		'ESTADO_ASISTENCIA',
 	];
+	
 
 	public function invitado()
 	{
