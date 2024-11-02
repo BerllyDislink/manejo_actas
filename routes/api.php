@@ -4,7 +4,11 @@ use App\Http\Controllers\ActaController;
 use App\Http\Controllers\ParticipantesController;
 use App\Http\Controllers\sesion_controller;
 use App\Http\Controllers\orden_sesion_controller;
+use App\Http\Controllers\TareaController;
+use App\Http\Controllers\EncargadosTareaController;
+
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -73,6 +77,25 @@ Route::post('/tarea/save', [TareaController::class, 'store']);
 Route::put('/tarea/update/{id}',[TareaController::class, 'update']);
 
 Route::delete('tarea/delete/{id}',[TareaController::class, 'destroy']);
+
+//CRUD Encargado tarea
+
+// Listar todos los encargados de tareas
+Route::get('encargados_tarea/all', [EncargadosTareaController::class, 'index']);
+
+// Mostrar un encargado de tarea por ID (usando los IDs de miembro y tarea)
+Route::get('encargados_tarea/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'show']);
+
+// Guardar un nuevo encargado de tarea
+Route::post('/encargados_tarea/save', [EncargadosTareaController::class, 'store']);
+
+// Actualizar un encargado de tarea existente (usando los IDs de miembro y tarea)
+Route::put('/encargados_tarea/update/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'update']);
+
+// Eliminar un encargado de tarea (usando los IDs de miembro y tarea)
+Route::delete('encargados_tarea/delete/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'destroy']);
+
+
 
 //Agregar invitados
 Route::post('/invitado', [ParticipantesController::class, 'agregarInvitado']);
