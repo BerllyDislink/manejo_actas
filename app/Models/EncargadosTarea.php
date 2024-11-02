@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Created by Reliese Model.
- */
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -22,26 +18,36 @@ use Illuminate\Database\Eloquent\Model;
  */
 class EncargadosTarea extends Model
 {
-	protected $table = 'encargados_tareas';
+    // Establece la tabla asociada
+    protected $table = 'encargados_tareas';
+
+    // Define la clave primaria si no es 'id'
+
 	public $incrementing = false;
-	public $timestamps = false;
+    protected $primaryKey = null; // Si no hay clave primaria definida, usa null
 
-	protected $casts = [
-		'MIEMBROS_IDMIEMBROS' => 'int',
-		'TAREAS_IDTAREAS' => 'int'
-	];
+    // Indica que no se usará la columna de timestamps
+    public $timestamps = false;
 
-	protected $fillable = [
-		'ESTADO'
-	];
+    // Agrega las columnas que se pueden llenar
+    protected $fillable = [
+        'MIEMBROS_IDMIEMBROS',
+        'TAREAS_IDTAREAS',
+        'ESTADO',
+    ];
 
-	public function miembro()
-	{
-		return $this->belongsTo(Miembro::class, 'MIEMBROS_IDMIEMBROS');
-	}
+    public function miembro()
+    {
+        return $this->belongsTo(Miembro::class, 'MIEMBROS_IDMIEMBROS');
+    }
 
-	public function tarea()
-	{
-		return $this->belongsTo(Tarea::class, 'TAREAS_IDTAREAS');
-	}
+    public function tarea()
+    {
+        return $this->belongsTo(Tarea::class, 'TAREAS_IDTAREAS');
+    }
+	    // Especifica que no hay clave primaria
+		public function getKeyName()
+		{
+			return null; // Sin clave primaria
+		}
 }
