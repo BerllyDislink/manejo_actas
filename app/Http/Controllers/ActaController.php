@@ -118,7 +118,7 @@ class ActaController extends Controller
     }
 
     // Validar el estado solicitado
-    $validatedData = $request->validate([
+    $validatedData = $request->validated([
         'estado' => 'required|in:Aprobada,Pendiente,Desaprobada'
     ]);
 
@@ -127,9 +127,7 @@ class ActaController extends Controller
         $acta = Acta::findOrFail($id);
 
         // Actualizar el estado del acta
-        $acta->estado = $validatedData['estado'];
-        $acta->save();
-
+        $acta->Update = $validatedData['estado'];
         return response()->json([
             'mensaje' => 'El estado del acta ha sido actualizado correctamente.',
             'acta' => $acta
