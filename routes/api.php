@@ -66,6 +66,8 @@ Route::put('/acta/update/{id}',[ActaController::class, 'update']);
 
 Route::delete('acta/delete/{id}',[ActaController::class, 'destroy']);
 
+Route::put('/acta/aprobar/{id}', [ActaController::class, 'aprobarActaAnterior']); 
+
 //CRUD Tareas
 
 Route::get('tarea/all', [TareaController::class, 'index']);

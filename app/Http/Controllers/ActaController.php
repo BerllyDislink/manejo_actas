@@ -111,4 +111,35 @@ class ActaController extends Controller
             return response()->json(['message' => "No se encontro el acta"],404);
         }
     }
+    public function aprobarActaAnterior(Request $request, $id)
+{
+    if ($id < 0) {
+        return response()->json(['message' => 'El id del acta debe ser mayor que 0'], 404);
+    }
+
+    // Validar el estado solicitado
+    $validatedData = $request->validate([
+        'estado' => 'required|in:Aprobada,Pendiente,Desaprobada'
+    ]);
+
+    try {
+        // Buscar el acta por id
+        $acta = Acta::findOrFail($id);
+
+        // Actualizar el estado del acta
+        $acta->estado = $validatedData['estado'];
+        $acta->save();
+
+        return response()->json([
+            'mensaje' => 'El estado del acta ha sido actualizado correctamente.',
+            'acta' => $acta
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'mensaje' => 'No se encontró el acta o hubo un error al actualizar el estado.',
+            'error' => $e->getMessage()
+        ], 404);
+    }
+}
 }
