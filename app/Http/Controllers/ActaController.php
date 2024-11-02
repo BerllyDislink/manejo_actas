@@ -119,7 +119,7 @@ class ActaController extends Controller
 
     // Validar el estado solicitado
     $validatedData = $request->validated([
-        'estado' => 'required|in:Aprobada,Pendiente,Desaprobada'
+        'estado' => 'required|in:aprobada,rechazada,pendiente'
     ]);
 
     try {
