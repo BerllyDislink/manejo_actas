@@ -130,4 +130,37 @@ class ActaController extends Controller
             return response()->json(['Message' => "Error al eliminar el acta", 'error' => $e],401);
         }
     }
+    public function aprobarActaAnterior(Request $request, $id)
+    {
+        // Check if id is valid
+        if ($id <= 0) {
+            return response()->json(['message' => 'El id del acta debe ser mayor que 0'], 404);
+        }
+    
+        // Validate the 'estado' field
+        $validatedData = $request->validate([
+            'estado' => 'required|in:aprobada,rechazada,pendiente'
+        ]);
+    
+        try {
+            // Find the acta by id
+            $acta = Acta::findOrFail($id);
+    
+            // Update the estado property on the acta model
+            $acta->estado = $validatedData['estado'];
+            $acta->save();
+    
+            return response()->json([
+                'mensaje' => 'El estado del acta ha sido actualizado correctamente.',
+                'acta' => $acta
+            ], 200);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => 'No se encontró el acta o hubo un error al actualizar el estado.',
+                'error' => $e->getMessage()
+            ], 404);  // Use 500 for server error
+        }
+    }
+    
 }
