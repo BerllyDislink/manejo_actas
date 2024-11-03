@@ -7,6 +7,7 @@ use App\Http\Controllers\ParticipantesController;
 use App\Http\Controllers\sesion_controller;
 use App\Http\Controllers\orden_sesion_controller;
 use App\Http\Controllers\TareaController;
+use App\Http\Controllers\proposicionesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/sesion/update/{IDSESION}',[sesion_controller::class, 'update']);
     Route::patch('/sesion/update/{IDSESION}',[sesion_controller::class, 'update_patch']);
     Route::delete('/sesion/delete/{IDSESION}',[sesion_controller::class, 'delete']);
+    //verificar quorum
+    Route::get('/sesion/{IDSESION}/verificar-quorum', [ParticipantesController::class, 'verificarQuorum']);
+
 
     //CRUD Orden sesion
     Route::get('/orden_sesion/all',[orden_sesion_controller::class, 'index']);
@@ -56,9 +60,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/tarea/update/{id}',[TareaController::class, 'update']);
     Route::delete('tarea/delete/{id}',[TareaController::class, 'destroy']);
 
+    //CRUD Proposiciones
+    Route::get('proposicion/all', [proposicionesController::class, 'index']);
+    Route::get('/proposicion/{id}',[proposicionesController::class, 'show']);
+    Route::post('/proposicion/save', [proposicionesController::class, 'store']);
+    Route::put('/proposicion/update/{ID_PROPOSICIONES}',[proposicionesController::class, 'update']);
+    Route::delete('proposicion/delete/{ID_PROPOSICIONES}',[proposicionesController::class, 'delete']);
+
     //CRUD invitados
 
 });
+
 
 //CRUD Encargado tarea
 
@@ -94,7 +106,5 @@ Route::post('/miembro', [ParticipantesController::class, 'agregarMiembro']);
 Route::get('/sesion/{IDSESION}/miembro/{IDMIEMBRO}/asistencia', [ParticipantesController::class, 'obtenerAsistenciaMiembro']);
 Route::post('/sesion/{IDSESION}/miembro/{IDMIEMBRO}/asistencia', [ParticipantesController::class, 'registrarAsistenciaMiembro']);
 
-//verificar quorum
-Route::get('/sesion/{IDSESION}/verificar-quorum', [ParticipantesController::class, 'verificarQuorum']);
 
 
