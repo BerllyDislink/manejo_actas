@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/sesion/update/{IDSESION}',[sesion_controller::class, 'update_patch']);
     Route::delete('/sesion/delete/{IDSESION}',[sesion_controller::class, 'delete']);
     //verificar quorum
-    Route::get('/sesion/{IDSESION}/verificar-quorum', [ParticipantesController::class, 'verificarQuorum']);
+    Route::get('/sesion/{IDSESION}/verificar-quorum', [sesion_controller::class, 'verificarQuorum']);
 
 
     //CRUD Orden sesion
