@@ -54,6 +54,7 @@ class AuthController extends Controller
                     $user->email = $validationRequest["email"];
                     $user->password = Hash::make($validationRequest["password"]);
                     $user->save();
+                    $user->assignRole($validationRequest["rol"]);
                     $idNewUser = $user->id;
 
                     $miembro = new Miembro();

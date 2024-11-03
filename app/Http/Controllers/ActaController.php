@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateActRequest;
 use App\Http\Resources\ActaResource;
 use App\Models\Acta;
 use http\Message;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Mockery\Exception;
 
@@ -17,8 +19,17 @@ class ActaController extends Controller
      */
     public function index()
     {
-        $actas = Acta::all();
-        return response()->json(ActaResource::Collection($actas),200);
+        try{
+            $this->authorize('viewAny', acta::class);
+
+            $actas = Acta::all();
+            return response()->json(ActaResource::Collection($actas),200);
+        }catch (Exception | AuthorizationException $e){
+            return response()->json([
+                'message' => 'Error al consultar las actas',
+                'error' => $e->getMessage()
+            ], 401);
+        }
     }
 
     /**
@@ -36,14 +47,16 @@ class ActaController extends Controller
     {
 
         try {
+            $this->authorize('create', acta::class);
+
             $createActa = Acta::create($request->validated());
             return response()->json($createActa,201);
-        } catch (\Exception $e) {
+        } catch (Exception | AuthorizationException $e) {
 
             return response()->json([
                 'message' => 'Error al crear el acta',
                 'error' => $e->getMessage()
-            ], 500);
+            ], 401);
         }
     }
 
@@ -53,18 +66,20 @@ class ActaController extends Controller
     public function show($id)
     {
         if($id < 0){
-            return response()->json(['message'=>'id debe ser mayor que 0'],404);
+            return response()->json(['message'=>'id debe ser mayor que 0', 'error' => ''],404);
         }
 
         try{
+            $this->authorize('view', acta::class);
+
             $acta = Acta::with('sesion')->findOrFail($id);
             return response()->json(new ActaResource($acta),200);
 
-        }catch (\Exception $e){
+        }catch (Exception |AuthorizationException $e){
             return response()->json([
-                'Message' => "No se encontro el acta",
+                'Message' => "Error al mostrar el acta",
                 'Error' => $e->getMessage()
-            ], 404);
+            ], 401);
         }
     }
 
@@ -82,15 +97,17 @@ class ActaController extends Controller
     public function update(UpdateActRequest $request,  $id)
     {
         if($id < 0){
-            return response()->json(['error' => 'id del acta a actualizar debe ser mayor que 0'],404);
+            return response()->json(['Message' => 'id del acta a actualizar debe ser mayor que 0'
+            ,'error' => ''],404);
         }
 
         try{
+            $this->authorize('update', acta::class);
             $acta = Acta::findOrFail($id);
             $acta->Update($request->validated());
             return response()->json($acta,200);
-        }catch (Exception $e){
-            return response()->json(['Message' => "No se encontro el acta"],404);
+        }catch (Exception | AuthorizationException $e){
+            return response()->json(['Message' => "Error al actualizar el acta", 'error' => $e], 401);
         }
     }
 
@@ -100,15 +117,17 @@ class ActaController extends Controller
     public function destroy($id)
     {
         if($id < 0){
-            return response()->json(['message'=>'id del acta a actualizar debe ser mayor que 0'],404);
+            return response()->json(['message'=>'id del acta a actualizar debe ser mayor que 0'
+            , 'error' => ''],404);
         }
 
         try{
+            $this->authorize('delete', acta::class);
             $acta = Acta::findOrFail($id);
             $acta->delete();
             return response()->json(['data' => 'El acta con el id: '.$id. ' ha sido eliminada'],200);
-        }catch (Exception $e){
-            return response()->json(['message' => "No se encontro el acta"],404);
+        }catch (Exception | AuthorizationException $e){
+            return response()->json(['Message' => "Error al eliminar el acta", 'error' => $e],401);
         }
     }
 }
