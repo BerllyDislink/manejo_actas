@@ -34,7 +34,7 @@ class AuthController extends Controller
                         $invitado = new Invitado();
                         $invitado->NOMBRE = $validationRequest["nombre"];
                         $invitado->CARGO = $validationRequest["cargo"];
-                        $invitado->DEPENDENCIA = $validationRequest["dependencia"] == null ? "N/A" : $validationRequest["dependencia"];
+                        $invitado->DEPENDENCIA = $validationRequest["dependencia"];
                         $invitado->user_id = $idNewUser;
                         $invitado->save();
                     });
