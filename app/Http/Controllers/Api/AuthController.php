@@ -18,11 +18,11 @@ class AuthController extends Controller
 {
     public function register(CreateUserCredential $request)
     {
-        try{
+        try {
             $validationRequest = $request->validated();
 
-            if(isset($validationRequest["dependencia"])){
-                if($validationRequest["rol"] == "invitado" || $validationRequest["rol"] == "estudiante"){
+            if (isset($validationRequest["dependencia"])) {
+                if ($validationRequest["rol"] == "invitado" || $validationRequest["rol"] == "estudiante") {
 
                     DB::transaction(function () use ($validationRequest) {
                         $user = new User();
@@ -41,12 +41,12 @@ class AuthController extends Controller
                     });
 
                     return response()->json("Invitado creado", 201);
-                }{
+                } {
                     return response()->json("No se puede crear el usuario con este rol", 422);
                 }
             }
 
-            if($validationRequest["rol"] != "estudiante" && $validationRequest["rol"] != "invitado"){
+            if ($validationRequest["rol"] != "estudiante" && $validationRequest["rol"] != "invitado") {
 
                 DB::transaction(function () use ($validationRequest) {
                     $user = new User();
@@ -65,34 +65,28 @@ class AuthController extends Controller
                 });
 
                 return response()->json('miembro creado', 201);
-            }else{
+            } else {
                 return response()->json("No puede crear un usuario con este rol", 422);
             }
-
-
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
-
     }
 
     public function login(LoginRequest $request)
     {
-        try{
+        try {
             $validationRequest = $request->validated();
-            if(Auth::attempt($validationRequest)){
-               $user = Auth::user();
-               $token = $user->createToken('token')->plainTextToken;
-               return response()->json(["token" => $token], 200);
-            }else{
+            if (Auth::attempt($validationRequest)) {
+                $user = Auth::user();
+                $token = $user->createToken('token')->plainTextToken;
+                return response()->json(["token" => $token], 200);
+            } else {
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
-
-
-
     }
 
     public function userProfile(Request $request)
@@ -100,8 +94,5 @@ class AuthController extends Controller
         return response()->json(["data" => Auth::user()], 200);
     }
 
-    public function logout(Request $request)
-    {
-
-    }
+    public function logout(Request $request) {}
 }
