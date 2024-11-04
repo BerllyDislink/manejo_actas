@@ -21,7 +21,6 @@ class AuthController extends Controller
         try{
             $validationRequest = $request->validated();
 
-            if(isset($validationRequest["dependencia"])){
                 if($validationRequest["rol"] == "invitado" || $validationRequest["rol"] == "estudiante"){
 
                     DB::transaction(function () use ($validationRequest) {
@@ -35,40 +34,31 @@ class AuthController extends Controller
                         $invitado = new Invitado();
                         $invitado->NOMBRE = $validationRequest["nombre"];
                         $invitado->CARGO = $validationRequest["cargo"];
-                        $invitado->DEPENDENCIA = $validationRequest["dependencia"];
+                        $invitado->DEPENDENCIA = $validationRequest["dependencia"] == null ? "N/A" : $validationRequest["dependencia"];
                         $invitado->user_id = $idNewUser;
                         $invitado->save();
                     });
 
                     return response()->json("Invitado creado", 201);
-                }{
-                    return response()->json("No se puede crear el usuario con este rol", 422);
+                }else{
+                    DB::transaction(function () use ($validationRequest) {
+                        $user = new User();
+                        $user->name = $validationRequest["nombre"];
+                        $user->email = $validationRequest["email"];
+                        $user->password = Hash::make($validationRequest["password"]);
+                        $user->save();
+                        $user->assignRole($validationRequest["rol"]);
+                        $idNewUser = $user->id;
+
+                        $miembro = new Miembro();
+                        $miembro->NOMBRE = $validationRequest["nombre"];
+                        $miembro->CARGO = $validationRequest["cargo"];
+                        $miembro->user_id = $idNewUser;
+                        $miembro->save();
+                    });
+
+                    return response()->json('miembro creado', 201);
                 }
-            }
-
-            if($validationRequest["rol"] != "estudiante" && $validationRequest["rol"] != "invitado"){
-
-                DB::transaction(function () use ($validationRequest) {
-                    $user = new User();
-                    $user->name = $validationRequest["nombre"];
-                    $user->email = $validationRequest["email"];
-                    $user->password = Hash::make($validationRequest["password"]);
-                    $user->save();
-                    $user->assignRole($validationRequest["rol"]);
-                    $idNewUser = $user->id;
-
-                    $miembro = new Miembro();
-                    $miembro->NOMBRE = $validationRequest["nombre"];
-                    $miembro->CARGO = $validationRequest["cargo"];
-                    $miembro->user_id = $idNewUser;
-                    $miembro->save();
-                });
-
-                return response()->json('miembro creado', 201);
-            }else{
-                return response()->json("No puede crear un usuario con este rol", 422);
-            }
-
 
         }catch (Exception $e){
             return response()->json(['error' => $e->getMessage()], 422);

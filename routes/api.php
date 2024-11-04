@@ -21,6 +21,9 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/testAPI', [AuthController::class, function () {
+    return response()->json("hola desde la API");
+}]);
 
 Route::middleware('auth:sanctum')->group(function () {
 
