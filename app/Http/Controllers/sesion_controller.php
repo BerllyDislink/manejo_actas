@@ -39,56 +39,35 @@ class sesion_controller extends Controller
 
     //para almancear las sesiones
 
-    public function store(Request $request){
-
-        try {
-
-            $this->authorize('create', Sesion::class);
-
-            $validator = Validator::make($request->all(),[
-                'LUGAR' => 'required',
-                'FECHA' => 'required|date',
-                'HORARIO_INICIO' => 'required|date_format:H:i',
-                'HORARIO_FINAL' => 'required|date_format:H:i',
-                'PRESIDENTE' => 'required',
-                'SECRETARIO' => 'required',
-            ]);
-            if($validator->fails()){
-                $data = [
-                    'message' => 'Error en la validación de los datos',
-                    'errors' => $validator->errors(),
-                    'status' => 400
-                ];
-                return response()->json($data,400);
-            }
-            $sesion = Sesion::create([
-                'LUGAR' => $request ->LUGAR,
-                'FECHA' => $request ->FECHA,
-                'HORARIO_INICIO' => $request->HORARIO_INICIO,
-                'HORARIO_FINAL' => $request ->HORARIO_FINAL,
-                'PRESIDENTE' => $request-> PRESIDENTE,
-                'SECRETARIO' => $request-> SECRETARIO
-            ]);
-            if(!$sesion){
-                $data = [
-                    'message' => 'Error al crear sesion',
-                    'status' => 500
-                ];
-                return response()->json($data,500);
-            }
-            $data = [
-                'sesion' => $sesion,
-                'User' => Auth::user(),
-                'status' => 201
-            ];
-            return response()->json($data,201);
-
-        }catch (Exception | AuthorizationException $e){
-            return response()->json(['error' => $e->getMessage()]);
+    public function store(Request $request) {
+        $this->authorize('create', Sesion::class);
+    
+        $validator = Validator::make($request->all(), [
+            'LUGAR' => 'required',
+            'FECHA' => 'required|date',
+            'HORARIO_INICIO' => 'required|date_format:H:i',
+            'HORARIO_FINAL' => 'required|date_format:H:i',
+            'PRESIDENTE' => 'required',
+            'SECRETARIO' => 'required',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error en la validación de los datos',
+                'errors' => $validator->errors(),
+                'status' => 400
+            ], 400);
         }
-
-
+    
+        $sesion = Sesion::create($request->only(['LUGAR', 'FECHA', 'HORARIO_INICIO', 'HORARIO_FINAL', 'PRESIDENTE', 'SECRETARIO']));
+    
+        return response()->json([
+            'sesion' => $sesion,
+            'User' => Auth::user(),
+            'status' => 201
+        ], 201);
     }
+    
 
     public function show($IDSESION){
 
