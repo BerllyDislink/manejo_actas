@@ -18,29 +18,8 @@ class AuthController extends Controller
 {
     public function register(CreateUserCredential $request)
     {
-        try{
             $validationRequest = $request->validated();
 
-                if($validationRequest["rol"] == "invitado" || $validationRequest["rol"] == "estudiante"){
-
-                    DB::transaction(function () use ($validationRequest) {
-                        $user = new User();
-                        $user->name = $validationRequest["nombre"];
-                        $user->email = $validationRequest["email"];
-                        $user->password = Hash::make($validationRequest["password"]);
-                        $user->save();
-                        $idNewUser = $user->id;
-
-                        $invitado = new Invitado();
-                        $invitado->NOMBRE = $validationRequest["nombre"];
-                        $invitado->CARGO = $validationRequest["cargo"];
-                        $invitado->DEPENDENCIA = $validationRequest["dependencia"];
-                        $invitado->user_id = $idNewUser;
-                        $invitado->save();
-                    });
-
-                    return response()->json("Invitado creado", 201);
-                }else{
                     DB::transaction(function () use ($validationRequest) {
                         $user = new User();
                         $user->name = $validationRequest["nombre"];
@@ -50,38 +29,36 @@ class AuthController extends Controller
                         $user->assignRole($validationRequest["rol"]);
                         $idNewUser = $user->id;
 
-                        $miembro = new Miembro();
-                        $miembro->NOMBRE = $validationRequest["nombre"];
-                        $miembro->CARGO = $validationRequest["cargo"];
-                        $miembro->user_id = $idNewUser;
-                        $miembro->save();
+                        if($validationRequest["rol"] == "invitado" || $validationRequest["rol"] == "estudiante"){
+                            $invitado = new Invitado();
+                            $invitado->NOMBRE = $validationRequest["nombre"];
+                            $invitado->CARGO = $validationRequest["cargo"];
+                            $invitado->DEPENDENCIA = $validationRequest["dependencia"] == "" ? "N/A" : $validationRequest["dependencia"];
+                            $invitado->user_id = $idNewUser;
+                            $invitado->save();
+                        }else{
+                            $miembro = new Miembro();
+                            $miembro->NOMBRE = $validationRequest["nombre"];
+                            $miembro->CARGO = $validationRequest["cargo"];
+                            $miembro->user_id = $idNewUser;
+                            $miembro->save();
+                        }
                     });
-
-                    return response()->json('miembro creado', 201);
-                }
-
-        }catch (Exception $e){
-            return response()->json(['error' => $e->getMessage()], 422);
-        }
+                    return response()->json(['message' => "Registro exitoso"], 201);
 
     }
 
     public function login(LoginRequest $request)
     {
-        try{
+
             $validationRequest = $request->validated();
             if(Auth::attempt($validationRequest)){
                $user = Auth::user();
                $token = $user->createToken('token')->plainTextToken;
                return response()->json(["token" => $token], 200);
-            }else{
-                return response()->json(['error' => 'Unauthorized'], 401);
             }
-        }catch (Exception $e){
-            return response()->json(['error' => $e->getMessage()], 422);
-        }
 
-
+            return response()->json(['message' => 'Las credenciales de inicio de sesion no son validas'], 401);
 
     }
 

@@ -37,7 +37,7 @@ class LoginRequest extends FormRequest
         throw new \Illuminate\Validation\ValidationException($validator,
             response()->json([
                 'errors' => $validator->errors(),
-                'message' => 'Error de validación'
+                'message' => 'Verifique la informacion ingresada'
             ], 422));
     }
 }

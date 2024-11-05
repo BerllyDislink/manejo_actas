@@ -13,15 +13,13 @@ use App\Models\Invitado;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Mockery\Exception;
-use function Laravel\Prompts\error;
+
 
 class sesion_controller extends Controller
 {
 
     // para obtener los datos de sesion
     public function index(){
-
-        try{
 
             $this->authorize('viewAny', Sesion::class);
 
@@ -31,9 +29,6 @@ class sesion_controller extends Controller
                 'status' => 200
             ];
             return response()->json($data,200);
-        }catch (Exception | AuthorizationException $e){
-            return response()->json(['error' => $e->getMessage()]);
-        }
 
     }
 

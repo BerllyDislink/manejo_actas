@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\acta;
 use App\Models\OrdenSesion;
+use App\Models\Sesion;
 use App\Models\Session;
 use App\Policies\ActaPolicy;
 use App\Policies\OrdenSesionPolicy;
@@ -26,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::policy(Session::class, SessionPolicy::class);
+        Gate::policy(Sesion::class, SessionPolicy::class);
         Gate::policy(OrdenSesion::class, OrdenSesionPolicy::class);
         Gate::policy(acta::class, ActaPolicy::class);
     }
