@@ -4,16 +4,20 @@ namespace App\Policies;
 
 use App\Models\Session;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Log;
 
 class SessionPolicy
 {
+    use HandlesAuthorization;
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole('coordinador', 'secretaria', 'miembro', 'invitado', 'estudiante');
+
+        return $user->can('read_session');
     }
 
     /**
@@ -21,7 +25,8 @@ class SessionPolicy
      */
     public function view(User $user): bool
     {
-        return $user->hasAnyRole('coordinador', 'secretario');
+        Log::info('view', ['user' => $user]);
+        return $user->can('read_session');
     }
 
     /**

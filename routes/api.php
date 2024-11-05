@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/sesion/update/{IDSESION}',[sesion_controller::class, 'update']);
     Route::patch('/sesion/update/{IDSESION}',[sesion_controller::class, 'update_patch']);
     Route::delete('/sesion/delete/{IDSESION}',[sesion_controller::class, 'delete']);
+
     //verificar quorum
     Route::get('/sesion/{IDSESION}/verificar-quorum', [sesion_controller::class, 'verificarQuorum']);
 
@@ -77,7 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-
+    //Solicitudes, solicitantes, descripcion
     Route::apiResource('solicitudes',   SolicitudController::class);
     Route::apiResource('solicitantes',  SolicitanteController::class);
     Route::apiResource('descripciones', DescripcionController::class);
