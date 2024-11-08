@@ -82,10 +82,6 @@ class ParticipantesController extends Controller
       return response()->json(['mensaje' => 'Asistencia registrada con éxito.', 'asistencia' => $asistencia]);
   }
 
-
-
-
-
     //INVITADOS
     public function agregarInvitado(Request $request)
     {

@@ -2,8 +2,12 @@
 
 use App\Http\Controllers\ActaController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\AsistenciaInvitadosController;
+use App\Http\Controllers\AsistenciaMiembrosController;
 use App\Http\Controllers\DescripcionController;
 use App\Http\Controllers\EncargadosTareaController;
+use App\Http\Controllers\InvitadosController;
+use App\Http\Controllers\MiembrosController;
 use App\Http\Controllers\ParticipantesController;
 use App\Http\Controllers\sesion_controller;
 use App\Http\Controllers\orden_sesion_controller;
@@ -76,7 +80,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //CRUD invitados
 
+    //Rutas de Miembros
+    Route::get('miembro/allInf', [MiembrosController::class, 'getMiembros']);
 
+    //Rutas AsistenciaMiembros
+    Route::get('/asistenciaMiembros/all', [AsistenciaMiembrosController::class, 'index']);
+    Route::post('/asistenciaMiembros/save', [AsistenciaMiembrosController::class, 'store']);
+
+    //Rutas AsistenciaInvitados
+    Route::post('/asistenciaInvitados/save', [AsistenciaInvitadosController::class, 'store']);
+
+    //Rutas de Invitados
+    Route::get('/invitado/InvitadosWithOutStudents', [InvitadosController::class, 'getInvitadosWithOutStudentsRole']);
 
     //Solicitudes, solicitantes, descripcion
     Route::apiResource('solicitudes',   SolicitudController::class);

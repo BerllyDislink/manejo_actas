@@ -73,7 +73,6 @@ class sesion_controller extends Controller
             }
             $data = [
                 'sesion' => $sesion,
-                'User' => Auth::user(),
                 'status' => 201
             ];
             return response()->json($data,201);
