@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAsistenciaMiembroRequest;
 use App\Http\Resources\AsistenciaMiembroResource;
+use App\Mail\MeetingInvitationMailable;
 use App\Models\AsistenciaMiembro;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 
 class AsistenciaMiembrosController extends Controller
 {
@@ -42,17 +44,24 @@ class AsistenciaMiembrosController extends Controller
         try {
 
             DB::transaction(function () use ($validatedRequest) {
-                collect($validatedRequest['listMiembros'])->map(function ($miembro) use ($validatedRequest) {
+               collect($validatedRequest['listMiembros'])->map(function ($miembro) use ($validatedRequest) {
 
-                    return AsistenciaMiembro::create(
-                        [
-                            "SESSION_IDSESION" => $validatedRequest['idSesion'],
-                            "MIEMBRO_IDMIEMBRO" => $miembro["id_miembro"],
-                            "ESTADO_ASISTENCIA" => 'pendiente'
-                        ]
-                    );
+
+                   $newAsistenciaMiembro = new AsistenciaMiembro();
+                   $newAsistenciaMiembro->SESSION_IDSESION = $validatedRequest['idSesion'];
+                   $newAsistenciaMiembro->MIEMBRO_IDMIEMBRO = $miembro["id_miembro"];
+                   $newAsistenciaMiembro->ESTADO_ASISTENCIA = 'pendiente';
+                   $newAsistenciaMiembro->save();
+
+                   $email = $newAsistenciaMiembro->miembro()->with('users')->get()->pluck('users.email');
+                   $miembro = $newAsistenciaMiembro->miembro()->get();
+                   $sesion = $newAsistenciaMiembro->sesion()->get();
+
+                   Mail::to($email[0])->send(new MeetingInvitationMailable($miembro[0], $sesion[0], 'Invitacion a reunion'));
                 });
+
             });
+
             return response()->json(['message' => 'Invitaciones asignadas (Miembros)'], 201);
         }catch (Exception $e){
             return response()->json(['message' => $e->getMessage()], 400);
@@ -64,7 +73,7 @@ class AsistenciaMiembrosController extends Controller
      */
     public function show(string $id)
     {
-        //
+
     }
 
     /**

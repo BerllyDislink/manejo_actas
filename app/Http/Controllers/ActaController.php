@@ -50,7 +50,7 @@ class ActaController extends Controller
             $this->authorize('create', acta::class);
 
             $createActa = Acta::create($request->validated());
-            return response()->json($createActa,201);
+            return response()->json(['message' => 'Acta creada correctamente', $createActa],201);
         } catch (Exception | AuthorizationException $e) {
 
             return response()->json([
@@ -136,25 +136,25 @@ class ActaController extends Controller
         if ($id <= 0) {
             return response()->json(['message' => 'El id del acta debe ser mayor que 0'], 404);
         }
-    
+
         // Validate the 'estado' field
         $validatedData = $request->validate([
             'estado' => 'required|in:aprobada,rechazada,pendiente'
         ]);
-    
+
         try {
             // Find the acta by id
             $acta = Acta::findOrFail($id);
-    
+
             // Update the estado property on the acta model
             $acta->estado = $validatedData['estado'];
             $acta->save();
-    
+
             return response()->json([
                 'mensaje' => 'El estado del acta ha sido actualizado correctamente.',
                 'acta' => $acta
             ], 200);
-    
+
         } catch (\Exception $e) {
             return response()->json([
                 'mensaje' => 'No se encontró el acta o hubo un error al actualizar el estado.',
@@ -162,5 +162,5 @@ class ActaController extends Controller
             ], 404);  // Use 500 for server error
         }
     }
-    
+
 }

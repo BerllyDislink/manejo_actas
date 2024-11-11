@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AsistenciaMiembro;
 use App\Models\Session;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Access\Gate;
@@ -43,8 +44,8 @@ class sesion_controller extends Controller
             $validator = Validator::make($request->all(),[
                 'LUGAR' => 'required',
                 'FECHA' => 'required|date',
-                'HORARIO_INICIO' => 'required|date_format:H:i',
-                'HORARIO_FINAL' => 'required|date_format:H:i',
+                'HORARIO_INICIO' => 'required',
+                'HORARIO_FINAL' => 'required|',
                 'PRESIDENTE' => 'required',
                 'SECRETARIO' => 'required',
             ]);
@@ -72,7 +73,7 @@ class sesion_controller extends Controller
                 return response()->json($data,500);
             }
             $data = [
-                'sesion' => $sesion,
+                'sesion' => $sesion->load('asistencia_miembros'),
                 'status' => 201
             ];
             return response()->json($data,201);
@@ -160,8 +161,8 @@ class sesion_controller extends Controller
             $validator = Validator::make($request->all(), [
                 'LUGAR' => 'required',
                 'FECHA' => 'required|date',
-                'HORARIO_INICIO' => 'required|date_format:H:i',
-                'HORARIO_FINAL' => 'required|date_format:H:i',
+                'HORARIO_INICIO' => 'required',
+                'HORARIO_FINAL' => 'required',
                 'PRESIDENTE' => 'required',
                 'SECRETARIO' => 'required',
             ]);
@@ -296,5 +297,12 @@ class sesion_controller extends Controller
         'quorum' => $quorum,
         'cumple_quorum' => $cumpleQuorum
     ]);
+}
+
+public function showInviteToSesion($id)
+{
+    $am = new AsistenciaMiembro();
+    $findAM = $am->query()->with('miembro')->where('SESSION_IDSESION', '=', $id)->get()->pluck('miembro');
+    return response()->json( $findAM, 200);
 }
 }

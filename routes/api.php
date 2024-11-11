@@ -15,6 +15,7 @@ use App\Http\Controllers\SolicitanteController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\TareaController;
 use App\Http\Controllers\proposicionesController;
+use App\Models\Sesion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -101,7 +102,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-
+Route::get('/sesion/MiembrosInvitados/{id}',[sesion_controller::class, 'showInviteToSesion']);
 //CRUD Encargado tarea
 
 // Listar todos los encargados de tareas

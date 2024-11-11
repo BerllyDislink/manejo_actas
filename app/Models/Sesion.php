@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Sesion
- * 
+ *
  * @property int $IDSESION
  * @property string $LUGAR
  * @property Carbon $FECHA
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $HORARIO_FINAL
  * @property string $PRESIDENTE
  * @property string $SECRETARIO
- * 
+ *
  * @property Collection|Acta[] $actas
  * @property Collection|AsistenciaInvitado[] $asistencia_invitados
  * @property Collection|AsistenciaMiembro[] $asistencia_miembros
@@ -57,13 +57,13 @@ class Sesion extends Model
 	   {
 		   return Carbon::parse($value)->setTimezone('America/Bogota')->toDateString();
 	   }
-   
+
 	   // Mutator para HORARIO_INICIO
 	   public function getHORARIOINICIOAttribute($value)
 	   {
 		   return Carbon::parse($value)->setTimezone('America/Bogota')->toDateTimeString();
 	   }
-   
+
 	   // Mutator para HORARIO_FINAL
 	   public function getHORARIOFINALAttribute($value)
 	   {
@@ -104,7 +104,7 @@ class Sesion extends Model
 	{
 		return $this->hasMany(Tarea::class, 'SESION_IDSESION');
 	}
- 
-	
+
+
 
 }
