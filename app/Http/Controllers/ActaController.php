@@ -50,7 +50,7 @@ class ActaController extends Controller
             $this->authorize('create', acta::class);
 
             $createActa = Acta::create($request->validated());
-            return response()->json(['message' => 'Acta creada correctamente', $createActa],201);
+            return response()->json(['message' => 'Acta '.$createActa['ID_ACTA'].' creada correctamente: ', $createActa],201);
         } catch (Exception | AuthorizationException $e) {
 
             return response()->json([

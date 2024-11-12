@@ -15,6 +15,7 @@ use App\Policies\AsistenciaMiembroPolicy;
 use App\Policies\MiembroPolicy;
 use App\Policies\OrdenSesionPolicy;
 use App\Policies\SessionPolicy;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -39,5 +40,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Miembro::class, MiembroPolicy::class);
         Gate::policy(AsistenciaMiembro::class, AsistenciaMiembroPolicy::class);
         Gate::policy(AsistenciaInvitado::class, AsistenciaInvitadoPolicy::class);
+
+        //Valore del paginator
+
     }
 }

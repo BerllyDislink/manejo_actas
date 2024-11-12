@@ -64,7 +64,7 @@ class AsistenciaMiembrosController extends Controller
 
             return response()->json(['message' => 'Invitaciones asignadas (Miembros)'], 201);
         }catch (Exception $e){
-            return response()->json(['message' => $e->getMessage()], 400);
+            return response()->json(['message' => 'Error al enviar las invitaciones', 'description' => $e->getMessage()], 400);
         }
     }
 

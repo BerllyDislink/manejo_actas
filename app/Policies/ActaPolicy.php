@@ -13,7 +13,7 @@ class ActaPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyRole('coordinador', 'secretario', 'miembro', 'estudiante');
+        return $user->hasAnyRole('coordinador', 'secretario', 'miembro', 'invitado', 'estudiante');
     }
 
     /**
@@ -21,7 +21,7 @@ class ActaPolicy
      */
     public function view(User $user): bool
     {
-        return $user->hasAnyRole('coordinador', 'secretario', 'miembro', 'estudiante');
+        return $user->hasAnyRole('coordinador', 'secretario', 'miembro', 'invitado', 'estudiante');
     }
 
     /**

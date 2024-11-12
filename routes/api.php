@@ -36,6 +36,8 @@ Route::get('/testAPI', [AuthController::class, function () {
 
 Route::middleware('auth:sanctum')->group(function () {
 
+
+
     Route::get('/profile', [AuthController::class, 'userProfile']);
 
     //CRUD sesion
@@ -102,7 +104,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-Route::get('/sesion/MiembrosInvitados/{id}',[sesion_controller::class, 'showInviteToSesion']);
+Route::get('/sesion/MiembrosInvitados',[sesion_controller::class, 'showInviteToSesion']);
 //CRUD Encargado tarea
 
 // Listar todos los encargados de tareas

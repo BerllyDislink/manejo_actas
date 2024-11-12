@@ -8,11 +8,13 @@ use App\Http\Requests\Api\LoginRequest;
 use App\Models\Invitado;
 use App\Models\Miembro;
 use App\Models\User;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use PHPUnit\Framework\MockObject\Exception;
+use Spatie\QueryBuilder\QueryBuilder;
+
 
 class AuthController extends Controller
 {
@@ -62,9 +64,34 @@ class AuthController extends Controller
 
     }
 
-    public function userProfile(Request $request)
+    public function userProfile(Request $request): \Illuminate\Http\JsonResponse
     {
-        return response()->json(["data" => Auth::user()], 200);
+        $profile = Auth::user();
+        $profileMiembro = QueryBuilder::for(User::class)
+            ->select('users.id as id_user', 'miembros.IDMIEMBRO as id_miembro' ,'users.email', 'miembros.NOMBRE as nombre', 'miembros.CARGO as cargo', 'roles.name as rol')
+            ->join('miembros', 'users.id', '=', 'miembros.user_id')
+            ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->where('users.email', 'like', $profile->email)
+            ->get();
+
+
+        $profileInvitado = QueryBuilder::for(User::class)
+            ->select('users.id as id_user', 'invitados.IDINVITADOS as id_invitado', 'users.email', 'invitados.NOMBRE as nombre', 'invitados.CARGO as cargo', 'invitados.DEPENDENCIA as dependencia',  'roles.name as rol')
+            ->join('invitados', 'users.id', '=', 'invitados.user_id')
+            ->join('model_has_roles' , 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('users.email', 'like', $profile->email)
+            ->get();
+
+        if($profileMiembro->count() > 0){
+            $profile = $profileMiembro;
+        }elseif ($profileInvitado->count() > 0){
+            $profile = $profileInvitado;
+        }
+
+        return response()->json(['data' => $profile], 200);
+
     }
 
     public function logout(Request $request)

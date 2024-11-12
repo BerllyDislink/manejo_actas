@@ -24,13 +24,12 @@ class sesion_controller extends Controller
 
             $this->authorize('viewAny', Sesion::class);
 
-            $sesion = Sesion::all();
+            $sesion = Sesion::orderByDesc('IDSESION')->paginate(6);
             $data = [
                 'sesion' => $sesion,
                 'status' => 200
             ];
             return response()->json($data,200);
-
     }
 
     //para almancear las sesiones
@@ -76,7 +75,7 @@ class sesion_controller extends Controller
                 'sesion' => $sesion->load('asistencia_miembros'),
                 'status' => 201
             ];
-            return response()->json($data,201);
+            return response()->json(['message' => 'Sesion creada exitosamente', 'data' => $data],201);
 
         }catch (Exception | AuthorizationException $e){
             return response()->json(['error' => $e->getMessage()]);
@@ -192,7 +191,7 @@ class sesion_controller extends Controller
             return response()->json($data, 200);
 
         }catch (Exception | AuthorizationException $e){
-            return response()->json(['error' => $e->getMessage()]);
+            return response()->json(['message' => 'No se logro actualiza la sesion', 'error' => $e->getMessage()]);
         }
     }
 
@@ -258,7 +257,7 @@ class sesion_controller extends Controller
             return response()->json($data, 200);
 
         }catch (Exception | AuthorizationException $e){
-            return response()->json(['error' => $e->getMessage()]);
+            return response()->json(['message' => 'No se logro actualiza la sesion', 'error' => $e->getMessage()]);
         }
     }
 
@@ -299,10 +298,10 @@ class sesion_controller extends Controller
     ]);
 }
 
-public function showInviteToSesion($id)
+public function showInviteToSesion()
 {
     $am = new AsistenciaMiembro();
-    $findAM = $am->query()->with('miembro')->where('SESSION_IDSESION', '=', $id)->get()->pluck('miembro');
+    $findAM = Session::all();
     return response()->json( $findAM, 200);
 }
 }

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+use Mockery\Exception;
 
 class AsistenciaInvitadosController extends Controller
 {
@@ -37,23 +38,26 @@ class AsistenciaInvitadosController extends Controller
         Gate::authorize('create', AsistenciaInvitado::class);
         $validatedData = $request->validated();
 
-        DB::transaction(function () use ($validatedData){
-            collect($validatedData['listInvitados'])->map(function ($invitado) use ($validatedData) {
-                $newAsistenciaInvitado = new AsistenciaInvitado();
-                $newAsistenciaInvitado->SESION_IDSESION = $validatedData['idSesion'];
-                $newAsistenciaInvitado->INIVITADO_IDINVITADO = $invitado['id_invitado'];
-                $newAsistenciaInvitado->ESTADO_ASISTENCIA = 'Pendiente';
-                $newAsistenciaInvitado->save();
+        try {
+            DB::transaction(function () use ($validatedData) {
+                collect($validatedData['listInvitados'])->map(function ($invitado) use ($validatedData) {
+                    $newAsistenciaInvitado = new AsistenciaInvitado();
+                    $newAsistenciaInvitado->SESION_IDSESION = $validatedData['idSesion'];
+                    $newAsistenciaInvitado->INIVITADO_IDINVITADO = $invitado['id_invitado'];
+                    $newAsistenciaInvitado->ESTADO_ASISTENCIA = 'Pendiente';
+                    $newAsistenciaInvitado->save();
 
-                $invitado = $newAsistenciaInvitado->invitado()->get();
-                $sesion = $newAsistenciaInvitado->sesion()->get();
-                $email = $newAsistenciaInvitado->invitado()->with('users')->get()->pluck('users.email');
+                    $invitado = $newAsistenciaInvitado->invitado()->get();
+                    $sesion = $newAsistenciaInvitado->sesion()->get();
+                    $email = $newAsistenciaInvitado->invitado()->with('users')->get()->pluck('users.email');
 
-                Mail::to($email[0])->send(new MeetingInvitationMailable($invitado[0], $sesion[0], "Invitacion a reunion"));
+                    Mail::to($email[0])->send(new MeetingInvitationMailable($invitado[0], $sesion[0], "Invitacion a reunion"));
+                });
             });
-        });
-
-        return response()->json(['message' => 'Invitaciones asignadas (Invitados)']);
+            return response()->json(['message' => 'Invitaciones asignadas (Invitados)']);
+        }catch (Exception $e){
+            return response()->json(['message' => 'Error al enviar las invitaciones', 'description' => $e->getMessage()]);
+        }
     }
 
     /**
