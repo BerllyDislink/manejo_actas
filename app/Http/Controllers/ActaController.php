@@ -22,7 +22,7 @@ class ActaController extends Controller
         try{
             $this->authorize('viewAny', acta::class);
 
-            $actas = Acta::all();
+            $actas = Acta::with('sesion')->orderByDesc('ID_ACTA')->paginate(6);
             return response()->json(ActaResource::Collection($actas),200);
         }catch (Exception | AuthorizationException $e){
             return response()->json([

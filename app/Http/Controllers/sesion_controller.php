@@ -78,7 +78,7 @@ class sesion_controller extends Controller
             return response()->json(['message' => 'Sesion creada exitosamente', 'data' => $data],201);
 
         }catch (Exception | AuthorizationException $e){
-            return response()->json(['error' => $e->getMessage()]);
+            return response()->json(['message'=> 'No fue posible crear la sesion','error' => $e->getMessage()]);
         }
 
 
