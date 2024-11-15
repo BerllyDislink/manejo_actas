@@ -70,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/acta/update/{id}',[ActaController::class, 'update']);
     Route::delete('acta/delete/{id}',[ActaController::class, 'destroy']);
     Route::put('/acta/estado/{id}',[ActaController::class, 'aprobarActaAnterior']);
+    Route::get('/actaOfSesion/{IDSESION}', [ActaController::class , 'getActaById']);
 
     //CRUD Tareas
     Route::get('tarea/all', [TareaController::class, 'index']);
