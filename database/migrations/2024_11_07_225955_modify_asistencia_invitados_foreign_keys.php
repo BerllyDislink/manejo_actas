@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('asistencia_invitado', function (Blueprint $table) {
-            $table->dropForeign('fk_asistencia_invitado_invitados');
+         /*    $table->dropForeign('fk_asistencia_invitado_invitados');
             $table->dropForeign('fk_asistencia_invitado_sesion');
 
             $table->dropColumn('INIVITADO_IDINVITADO');
             $table->dropColumn('SESION_IDSESION');
 
             $table->integer("INIVITADO_IDINVITADO");
-            $table->integer("SESION_IDSESION")->after("INIVITADO_IDINVITADO");
+            $table->integer("SESION_IDSESION")->after("INIVITADO_IDINVITADO"); */
 
             $table->foreign('INIVITADO_IDINVITADO', 'fk_invitados_in_asistencia_invitado')->references('IDINVITADOS')->on('invitados')->onDelete('restrict');
             $table->foreign('SESION_IDSESION', 'fk_sesion_in_asistencia_invitado')->references('IDSESION')->on('sesion')->onDelete('restrict');

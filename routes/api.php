@@ -69,7 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/acta/save', [ActaController::class, 'store']);
     Route::put('/acta/update/{id}',[ActaController::class, 'update']);
     Route::delete('acta/delete/{id}',[ActaController::class, 'destroy']);
-    Route::get('/actaOfSesion/{IDSESION}', [ActaController::class, 'getActaById']);
+    Route::put('/acta/estado/{id}',[ActaController::class, 'aprobarActaAnterior']);
 
     //CRUD Tareas
     Route::get('tarea/all', [TareaController::class, 'index']);
