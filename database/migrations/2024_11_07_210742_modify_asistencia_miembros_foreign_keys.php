@@ -12,15 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('asistencia_miembros', function (Blueprint $table) {
-            $table->dropForeign('fk_asistencia_miembros_sesion');
+           /*  $table->dropForeign('fk_asistencia_miembros_sesion');
             $table->dropForeign('fk_asistencia_miembros_miembros');
 
             $table->dropColumn('SESSION_IDSESION');
             $table->dropColumn('MIEMBRO_IDMIEMBRO');
-
+            
             $table->integer('SESSION_IDSESION');
             $table->integer('MIEMBRO_IDMIEMBRO')->after('SESSION_IDSESION');
-
+            */
+            
             $table->foreign('SESSION_IDSESION', 'fk_sesion_in_asistencia_miembros')->references('IDSESION')->on('sesion')->onDelete('restrict');
             $table->foreign('MIEMBRO_IDMIEMBRO', 'fk_miembro_in_asistencia_miembros')->references('IDMIEMBRO')->on('miembros')->onDelete('restrict');
         });
