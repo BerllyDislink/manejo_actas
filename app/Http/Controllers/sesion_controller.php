@@ -87,7 +87,7 @@ class sesion_controller extends Controller
     public function show($IDSESION){
 
         try{
-            $this->authorize('view', Session::class);
+            $this->authorize('view', Sesion::class);
 
             $sesion = Sesion::find($IDSESION);
             if(!$sesion){

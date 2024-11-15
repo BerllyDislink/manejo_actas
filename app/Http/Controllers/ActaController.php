@@ -6,9 +6,8 @@ use App\Http\Requests\CreateActaRequest;
 use App\Http\Requests\UpdateActRequest;
 use App\Http\Resources\ActaResource;
 use App\Models\Acta;
-use http\Message;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Auth\AuthenticationException;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Mockery\Exception;
 
@@ -161,6 +160,21 @@ class ActaController extends Controller
                 'error' => $e->getMessage()
             ], 404);  // Use 500 for server error
         }
+    }
+
+    public function getActaById($IDSESION)
+    {
+        Gate::authorize('view', Acta::class);
+
+        $acta = Acta::where('SESION_IDSESION', '=', $IDSESION)->get();
+
+        if (!$acta) {
+            return response()->json([
+                'message' => 'No se encontró acta para esta sesión'
+            ], 404);
+        }
+
+        return response()->json(['data' => ActaResource::Collection($acta)],200);
     }
 
 }

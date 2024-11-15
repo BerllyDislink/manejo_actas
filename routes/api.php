@@ -11,6 +11,7 @@ use App\Http\Controllers\MiembrosController;
 use App\Http\Controllers\ParticipantesController;
 use App\Http\Controllers\sesion_controller;
 use App\Http\Controllers\orden_sesion_controller;
+use App\Http\Controllers\SesionInvitadosController;
 use App\Http\Controllers\SolicitanteController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\TareaController;
@@ -68,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/acta/save', [ActaController::class, 'store']);
     Route::put('/acta/update/{id}',[ActaController::class, 'update']);
     Route::delete('acta/delete/{id}',[ActaController::class, 'destroy']);
+    Route::get('/actaOfSesion/{IDSESION}', [ActaController::class, 'getActaById']);
 
     //CRUD Tareas
     Route::get('tarea/all', [TareaController::class, 'index']);
@@ -103,7 +105,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('solicitantes',  SolicitanteController::class);
     Route::apiResource('descripciones', DescripcionController::class);
 
-
+    //Asistencias a la reunion
+    Route::get('/memberInvitedToSesion/{IDSESION}', [SesionInvitadosController::class, 'getMemberInvitedToSesion']);
+    Route::get('/guestInvitedToSesion/{IDSESION}', [SesionInvitadosController::class, 'getGuestInvitedToSesion']);
 });
 
 Route::get('/sesion/MiembrosInvitados',[sesion_controller::class, 'showInviteToSesion']);
