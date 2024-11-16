@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateSolicitudRequest;
 use App\Http\Resources\SolicitudResource;
 use App\Models\Solicitud;
 use Illuminate\Support\Facades\Gate;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class SolicitudController extends Controller
 {
@@ -18,7 +20,12 @@ class SolicitudController extends Controller
     {
         Gate::authorize('viewAny', Solicitud::class);
 
-        $solicitudes = Solicitud::all();
+        $solicitudes = QueryBuilder::for(Solicitud::class)
+            ->allowedFilters([
+                AllowedFilter::partial('asunto', 'ASUNTO')
+            ])
+            ->with('sesion', 'solicitante', 'descripcion')
+            ->get();
 
         return SolicitudResource::collection($solicitudes);
     }
@@ -52,7 +59,7 @@ class SolicitudController extends Controller
     {
         Gate::authorize('view', $solicitude);
 
-        $solicitude->load('solicitante', 'descripcion');
+        $solicitude->load('sesion', 'solicitante', 'descripcion');
 
         return new SolicitudResource($solicitude);
     }
@@ -60,21 +67,21 @@ class SolicitudController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSolicitudRequest $request, Solicitud $solicitud)
+    public function update(UpdateSolicitudRequest $request, Solicitud $solicitude)
     {
-        Gate::authorize('update', $solicitud);
+        Gate::authorize('update', $solicitude);
 
-        $solicitud->ASUNTO                      = $request->input('asunto');
-        $solicitud->DESICION                    = $request->input('desicion');
-        $solicitud->FECHA_DE_SOLICITUD          = $request->input('fecha_solicitud');
-        $solicitud->DEPENDENCIA                 = $request->input('dependencia');
-        $solicitud->SOLICITANTE_IDSOLICITANTE   = $request->input('solicitante_id');
-        $solicitud->SESION_IDSESION             = $request->input('sesion_id');
-        $solicitud->DESCRIPCION_IDDESCRIPCION   = $request->input('descripcion_id');
+        $solicitude->ASUNTO                      = $request->input('asunto');
+        $solicitude->DESICION                    = $request->input('desicion');
+        $solicitude->FECHA_DE_SOLICITUD          = $request->input('fecha_solicitud');
+        $solicitude->DEPENDENCIA                 = $request->input('dependencia');
+        $solicitude->SOLICITANTE_IDSOLICITANTE   = $request->input('solicitante_id');
+        $solicitude->SESION_IDSESION             = $request->input('sesion_id');
+        $solicitude->DESCRIPCION_IDDESCRIPCION   = $request->input('descripcion_id');
 
-        $solicitud->save();
+        $solicitude->save();
 
-        return response()->json(['data' => new SolicitudResource($solicitud)]);
+        return response()->json(['data' => new SolicitudResource($solicitude)]);
     }
 
     /**
@@ -82,7 +89,7 @@ class SolicitudController extends Controller
      */
     public function destroy(Solicitud $solicitude)
     {
-        Gate::authorize('update', $solicitude);
+        Gate::authorize('delete', $solicitude);
 
         $solicitude->delete();
 

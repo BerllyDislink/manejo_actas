@@ -80,7 +80,7 @@ class DescripcionController extends Controller
      */
     public function destroy(Descripcion $descripcione)
     {
-        Gate::authorize('update', $descripcione);
+        Gate::authorize('delete', $descripcione);
         
         $descripcione->delete();
 
