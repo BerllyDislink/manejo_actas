@@ -8,6 +8,8 @@ use App\Http\Resources\DescripcionResource;
 use App\Models\Descripcion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class DescripcionController extends Controller
 {
@@ -18,7 +20,15 @@ class DescripcionController extends Controller
     {
         Gate::authorize('viewAny', Descripcion::class);
 
-        $descripciones = Descripcion::all();
+        $descripciones = QueryBuilder::for(Descripcion::class)
+            ->allowedFilters([
+                AllowedFilter::callback('nombre', function($query, $value) {
+                    $query->where(function($query) use ($value) {
+                        $query->where('ESTU_IMPLICADOS', 'like', "%$value%")
+                              ->orWhere('DOCEN_IMPLICADOS', 'like', "%$value%");
+                    });
+                }),
+            ])->get();
 
         return DescripcionResource::collection($descripciones);
     }
