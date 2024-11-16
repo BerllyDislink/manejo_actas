@@ -37,7 +37,7 @@ class SesionInvitadosController extends Controller
         Gate::authorize('view', AsistenciaInvitado::class);
 
         $guestInviteToSesion = QueryBuilder::for(User::class)
-            ->select('users.id as user_id', 'invitados.IDINVITADOS as invitado_id', 'invitados.NOMBRE as nombre', 'users.email', 'invitados.CARGO as cargo',
+            ->select('users.id as user_id', 'invitados.IDINVITADOS as invitado_id', 'asistencia_invitado.', 'invitados.NOMBRE as nombre', 'users.email', 'invitados.CARGO as cargo',
                 'asistencia_invitado.ESTADO_ASISTENCIA as asistencia', 'roles.name as rol')
             ->join('invitados', 'users.id', '=', 'invitados.user_id')
             ->join('asistencia_invitado', 'invitados.IDINVITADOS', '=', 'asistencia_invitado.INIVITADO_IDINVITADO')

@@ -94,9 +94,11 @@ Route::middleware('auth:sanctum')->group(function () {
     //Rutas AsistenciaMiembros
     Route::get('/asistenciaMiembros/all', [AsistenciaMiembrosController::class, 'index']);
     Route::post('/asistenciaMiembros/save', [AsistenciaMiembrosController::class, 'store']);
+    Route::put('/asistenciaMiembros/update/{idSesion}/{idMiembro}', [AsistenciaMiembrosController::class, 'update']);
 
     //Rutas AsistenciaInvitados
     Route::post('/asistenciaInvitados/save', [AsistenciaInvitadosController::class, 'store']);
+    Route::put('/asistenciaInvitados/update/{idSesion}/{idInvitado}', [AsistenciaInvitadosController::class, 'update']);
 
     //Rutas de Invitados
     Route::get('/invitado/InvitadosWithOutStudents', [InvitadosController::class, 'getInvitadosWithOutStudentsRole']);

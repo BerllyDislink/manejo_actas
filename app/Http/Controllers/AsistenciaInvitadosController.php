@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAsistenciaInvitadoRequest;
 use App\Http\Requests\CreateAsistenciaMiembroRequest;
+use App\Http\Requests\UpdateAsistenciaRequest;
 use App\Mail\MeetingInvitationMailable;
 use App\Models\AsistenciaInvitado;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -79,9 +81,23 @@ class AsistenciaInvitadosController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateAsistenciaRequest $request, $idSesion, $idInvitado)
     {
-        //
+        try {
+            Gate::authorize('update', AsistenciaInvitado::class);
+            $validatedRequest = $request->validated();
+            $asistenciaInvitado = AsistenciaInvitado::where('SESION_IDSESION', '=', $idSesion)
+            ->where('INIVITADO_IDINVITADO' , '=', $idInvitado);
+
+            $asistenciaInvitado->update([
+                'ESTADO_ASISTENCIA' => $validatedRequest['estadoAsistencia']
+            ]);
+
+            return response()->json(['message' => 'Asistencia actualizada correctamente'], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'No actualizar la asistencia', 'description' => $e->getMessage()]);
+        }
+
     }
 
     /**

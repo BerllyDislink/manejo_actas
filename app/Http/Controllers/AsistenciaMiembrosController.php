@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAsistenciaMiembroRequest;
+use App\Http\Requests\UpdateAsistenciaRequest;
 use App\Http\Resources\AsistenciaMiembroResource;
 use App\Mail\MeetingInvitationMailable;
 use App\Models\AsistenciaMiembro;
@@ -87,9 +88,23 @@ class AsistenciaMiembrosController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateAsistenciaRequest $request, $idSesion, $idMiembro)
     {
-        //
+        try {
+            Gate::authorize('update', AsistenciaMiembro::class);
+            $validatedRequest = $request->validated();
+
+            $asistenciaMiembro = AsistenciaMiembro::where('SESSION_IDSESION', '=', $idSesion)
+                ->where('MIEMBRO_IDMIEMBRO' , '=', $idMiembro);
+
+            $asistenciaMiembro->update([
+                'ESTADO_ASISTENCIA' => $validatedRequest['estadoAsistencia']
+            ]);
+
+            return response()->json(['message' => 'Asistencia actualizada correctamente'], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'No se pudo actualizar la asistencia', 'description' => $e->getMessage()], 400);
+        }
     }
 
     /**
