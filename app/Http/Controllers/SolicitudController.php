@@ -18,7 +18,7 @@ class SolicitudController extends Controller
     {
         Gate::authorize('viewAny', Solicitud::class);
 
-        $solicitudes = Solicitud::all();
+        $solicitudes = Solicitud::with('sesion', 'solicitante', 'descripcion')->get();
 
         return SolicitudResource::collection($solicitudes);
     }

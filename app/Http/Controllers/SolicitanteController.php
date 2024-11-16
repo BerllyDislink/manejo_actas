@@ -7,6 +7,8 @@ use App\Http\Resources\SolicitanteResource;
 use App\Models\Solicitante;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class SolicitanteController extends Controller
 {
@@ -17,7 +19,10 @@ class SolicitanteController extends Controller
     {
         Gate::authorize('viewAny', Solicitante::class);
 
-        $solicitantes = Solicitante::all();
+        $solicitantes = QueryBuilder::for(Solicitante::class)
+            ->allowedFilters([
+                AllowedFilter::partial('nombre', 'NOMBRE'),
+            ])->get();
 
         return SolicitanteResource::collection($solicitantes);
     }

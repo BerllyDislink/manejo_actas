@@ -20,7 +20,8 @@ class DescripcionResource extends JsonResource
             'numero_estudiantes'    => $this->NUM_ESTU_IMPLICADOS,
             'docentes'              => $this->DOCEN_IMPLICADOS,
             'numero_docentes'       => $this->NUM_DOCEN_IMPLICADOS,
-            'ciudad'                => $this->PAIS_IMPLICADO,
+            'ciudad'                => $this->CIUDAD_IMPLICADA,
+            'pais'                  => $this->PAIS_IMPLICADO,
             'evento'                => $this->EVENTO,
         ];
     }

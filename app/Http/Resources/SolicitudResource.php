@@ -23,6 +23,7 @@ class SolicitudResource extends JsonResource
             'sesion_id'         => $this->SESION_IDSESION,
             'solicitante_id'    => $this->SOLICITANTE_IDSOLICITANTE,
             'descripcion_id'    => $this->DESCRIPCION_IDDESCRIPCION,
+            
             'solicitante'       => new SolicitanteResource($this->whenLoaded('solicitante')),
             'descripcion'       => new DescripcionResource($this->whenLoaded('descripcion')),
         ];
