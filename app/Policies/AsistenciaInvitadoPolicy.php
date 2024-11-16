@@ -43,7 +43,7 @@ class AsistenciaInvitadoPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, AsistenciaInvitado $asistenciaInvitado): bool
+    public function delete(User $user): bool
     {
         return $user->can('delete_guest_attendance');
     }
