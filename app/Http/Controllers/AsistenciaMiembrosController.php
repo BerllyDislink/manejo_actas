@@ -110,8 +110,18 @@ class AsistenciaMiembrosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($idSesion, $idMiembro)
     {
-        //
+        try {
+            Gate::authorize('delete', AsistenciaMiembro::class);
+            $asistenciaMiembro = AsistenciaMiembro::where('SESSION_IDSESION', '=', $idSesion)
+                ->where('MIEMBRO_IDMIEMBRO' , '=', $idMiembro);
+
+            $asistenciaMiembro->delete();
+
+            return response()->json(['message' => 'Asistencia eliminada correctamente'], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'No se pudo eliminar la asistencia', 'description' => $e->getMessage()], 400);
+        }
     }
 }

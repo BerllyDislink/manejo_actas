@@ -103,8 +103,21 @@ class AsistenciaInvitadosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($idSesion, $idInvitado)
     {
-        //
+        try{
+            Gate::authorize('delete', AsistenciaInvitado::class);
+
+            $asistenciaInvitado = AsistenciaInvitado::where('SESION_IDSESION', '=', $idSesion)
+                ->where('INIVITADO_IDINVITADO' , '=', $idInvitado);
+
+            $asistenciaInvitado->delete();
+
+            return response()->json(['message' => 'Asistencia eliminada correctamente']);
+
+        }catch (Exception $e){
+            return response()->json(['message' => 'No se pudo eliminar la asistencia', 'description' => $e->getMessage()]);
+        }
+
     }
 }
