@@ -9,6 +9,7 @@ use App\Http\Resources\TareaResource;
 use App\Models\Tarea;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TareaController extends Controller
 {
@@ -102,6 +103,17 @@ class TareaController extends Controller
             return response()->json("La tarea con el id: ".$id." fue eliminada", 204);
         }catch (Exception $e){
             return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+    public function deleteByIdSesion($IDSESION)
+    {
+        try{
+            Gate::authorize('delete', Tarea::class);
+            Tarea::where('SESION_IDSESION', '=', $IDSESION)->delete();
+            return response()->json(['message' => "La tarea se ha eliminado"], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'Error al eliminar la tarea','description' => $e->getMessage()], 404);
         }
     }
 }

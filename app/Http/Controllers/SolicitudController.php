@@ -6,6 +6,7 @@ use App\Http\Requests\StoreSolicitudRequest;
 use App\Http\Requests\UpdateSolicitudRequest;
 use App\Http\Resources\SolicitudResource;
 use App\Models\Solicitud;
+use Exception;
 use Illuminate\Support\Facades\Gate;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -94,5 +95,16 @@ class SolicitudController extends Controller
         $solicitude->delete();
 
         return response()->noContent();
+    }
+
+    public function deleteByIdSesion($IDSESION)
+    {
+        try {
+            Gate::authorize('delete', Solicitud::class);
+            Solicitud::where('SESION_IDSESION'. '=', $IDSESION)->delete();
+            return response()->json(['message' => 'Solicitud Eliminada correctamente.'], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'Solicitud No Eliminada.'], 404);
+        }
     }
 }

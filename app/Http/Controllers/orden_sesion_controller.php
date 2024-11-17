@@ -7,6 +7,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use App\Models\OrdenSesion;
 use App\Models\acta;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class orden_sesion_controller extends Controller
@@ -171,58 +172,70 @@ class orden_sesion_controller extends Controller
 
     }
 
-    public function update_patch(Request $request, $ID_ORDEN_SESION){
+    public function update_patch(Request $request, $ID_ORDEN_SESION)
+    {
 
-        try{
+        try {
             $this->authorize('update', OrdenSesion::class);
 
             $ordensesion = OrdenSesion::find($ID_ORDEN_SESION);
 
-            if(!$ordensesion){
+            if (!$ordensesion) {
                 $data = [
-                    'message'=> 'Sesion no encontrada',
+                    'message' => 'Sesion no encontrada',
                     'status' => 404
                 ];
-                return response()->json($data,404);
+                return response()->json($data, 404);
             }
 
-            $validator = Validator::make($request->all(),[
+            $validator = Validator::make($request->all(), [
                 'TEMA' => 'max:255',
                 'DESCRIPCION' => 'max:255',
                 'SESION_ORDENSESION' => 'int',
             ]);
 
-            if($validator->fails()){
+            if ($validator->fails()) {
                 $data = [
                     'message' => 'Error en la validación de los datos',
                     'errors' => $validator->errors(),
                     'status' => 400
                 ];
-                return response()->json($data,400);
+                return response()->json($data, 400);
 
             }
-            if($request->has('TEMA')){
+            if ($request->has('TEMA')) {
                 $ordensesion->TEMA = $request->TEMA;
             }
-            if($request->has('DESCRIPCION')){
+            if ($request->has('DESCRIPCION')) {
                 $ordensesion->DESCRIPCION = $request->DESCRIPCION;
             }
-            if($request->has('SESION_IDSESION')){
+            if ($request->has('SESION_IDSESION')) {
                 $ordensesion->SESION_IDSESION = $request->SESION_IDSESION;
             }
 
             $ordensesion->save();
 
             $data = [
-                'message'=> 'Sesion actualizada',
+                'message' => 'Sesion actualizada',
                 'orden_sesion' => $ordensesion,
-                'status' =>200
+                'status' => 200
             ];
-            return response()->json($data,200);
+            return response()->json($data, 200);
 
-        }catch (Exception | AuthenticationException $e){
+        } catch (Exception|AuthenticationException $e) {
             return response()->json(['error' => $e->getMessage()], 401);
         }
-
     }
+
+        public function deleteByIdSesion($IDSESION)
+        {
+            try{
+                Gate::authorize('delete', OrdenSesion::class);
+                OrdenSesion::where('SESION_IDSESION', '=', $IDSESION)->delete();
+                return response()->json(['message' => 'Item de orden se sesion eliminado correctamente'], 200);
+            }catch (Exception $e){
+                return response()->json(['message' => 'No se pudo eliminar el item del orden de sesion', 'description' => $e->getMessage()], 404);
+            }
+        }
+
 }

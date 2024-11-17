@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/orden_sesion/update/{ID_ORDEN_SESION}',[orden_sesion_controller::class, 'update']);
     Route::patch('/orden_sesion/update/{ID_ORDEN_SESION}',[orden_sesion_controller::class, 'update_patch']);
     Route::delete('/orden_sesion/delete/{ID_ORDEN_SESION}',[orden_sesion_controller::class, 'delete']);
+    Route::delete('/orden_sesion/deleteBySesion/{IDSESION}',[orden_sesion_controller::class, 'deleteByIdSesion']);
 
     //CRUD Acta
     Route::get('/acta/all',[ActaController::class, 'index']);
@@ -71,6 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('acta/delete/{id}',[ActaController::class, 'destroy']);
     Route::put('/acta/estado/{id}',[ActaController::class, 'aprobarActaAnterior']);
     Route::get('/actaOfSesion/{IDSESION}', [ActaController::class , 'getActaById']);
+    Route::delete('acta/deleteBySesion/{IDSESION}', [ActaController::class , 'deleteByIdSesion']);
 
     //CRUD Tareas
     Route::get('tarea/all', [TareaController::class, 'index']);
@@ -78,6 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tarea/save', [TareaController::class, 'store']);
     Route::put('/tarea/update/{id}',[TareaController::class, 'update']);
     Route::delete('tarea/delete/{id}',[TareaController::class, 'destroy']);
+    Route::delete('tarea/deleteBySesion/{IDSESION}',[TareaController::class, 'deleteByIdSesion']);
 
     //CRUD Proposiciones
     Route::get('proposicion/all', [proposicionesController::class, 'index']);
@@ -85,6 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/proposicion/save', [proposicionesController::class, 'store']);
     Route::put('/proposicion/update/{ID_PROPOSICIONES}',[proposicionesController::class, 'update']);
     Route::delete('proposicion/delete/{ID_PROPOSICIONES}',[proposicionesController::class, 'delete']);
+    Route::delete('proposicion/deleteBySesion/{IDSESION}',[proposicionesController::class, 'deleteByIdSesion']);
 
     //CRUD invitados
 
@@ -96,11 +100,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/asistenciaMiembros/save', [AsistenciaMiembrosController::class, 'store']);
     Route::put('/asistenciaMiembros/update/{idSesion}/{idMiembro}', [AsistenciaMiembrosController::class, 'update']);
     Route::delete('/asistenciaMiembros/delete/{idSesion}/{idMiembro}', [AsistenciaMiembrosController::class, 'destroy']);
+    Route::delete('/asistenciaMiembros/deleteBySesion/{idSesion}', [AsistenciaMiembrosController::class, 'deleteByIdSesion']);
 
     //Rutas AsistenciaInvitados
     Route::post('/asistenciaInvitados/save', [AsistenciaInvitadosController::class, 'store']);
     Route::put('/asistenciaInvitados/update/{idSesion}/{idInvitado}', [AsistenciaInvitadosController::class, 'update']);
     Route::delete('/asistenciaInvitados/delete/{idSesion}/{idInvitado}', [AsistenciaInvitadosController::class, 'destroy']);
+    Route::delete('/asistenciaInvitados/deleteBySesion/{idSesion}', [AsistenciaInvitadosController::class, 'deleteByIdSesion']);
 
     //Rutas de Invitados
     Route::get('/invitado/InvitadosWithOutStudents', [InvitadosController::class, 'getInvitadosWithOutStudentsRole']);
@@ -109,29 +115,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('solicitudes',   SolicitudController::class);
     Route::apiResource('solicitantes',  SolicitanteController::class);
     Route::apiResource('descripciones', DescripcionController::class);
+    Route::delete('solicitudes/deleteBySession/{IDSESION}', [SolicitudController::class , 'deleteByIdSesion']);
 
     //Asistencias a la reunion
     Route::get('/memberInvitedToSesion/{IDSESION}', [SesionInvitadosController::class, 'getMemberInvitedToSesion']);
     Route::get('/guestInvitedToSesion/{IDSESION}', [SesionInvitadosController::class, 'getGuestInvitedToSesion']);
+
+    Route::get('/sesion/MiembrosInvitados',[sesion_controller::class, 'showInviteToSesion']);
+    Route::get('encargados_tarea/all', [EncargadosTareaController::class, 'index']);
+    Route::get('encargados_tarea/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'show']);
+    Route::post('/encargados_tarea/save', [EncargadosTareaController::class, 'store']);
+    Route::put('/encargados_tarea/update/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'update']);
+    Route::delete('encargados_tarea/delete/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'destroy']);
+    Route::delete('encargados_tarea/deleteByTarea/{tareaId}', [EncargadosTareaController::class, 'deleteByIdTarea']);
+
 });
 
-Route::get('/sesion/MiembrosInvitados',[sesion_controller::class, 'showInviteToSesion']);
-//CRUD Encargado tarea
-
-// Listar todos los encargados de tareas
-Route::get('encargados_tarea/all', [EncargadosTareaController::class, 'index']);
-
-// Mostrar un encargado de tarea por ID (usando los IDs de miembro y tarea)
-Route::get('encargados_tarea/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'show']);
-
-// Guardar un nuevo encargado de tarea
-Route::post('/encargados_tarea/save', [EncargadosTareaController::class, 'store']);
-
-// Actualizar un encargado de tarea existente (usando los IDs de miembro y tarea)
-Route::put('/encargados_tarea/update/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'update']);
-
-// Eliminar un encargado de tarea (usando los IDs de miembro y tarea)
-Route::delete('encargados_tarea/delete/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'destroy']);
 
 
 

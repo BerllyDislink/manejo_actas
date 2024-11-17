@@ -124,4 +124,18 @@ class AsistenciaMiembrosController extends Controller
             return response()->json(['message' => 'No se pudo eliminar la asistencia', 'description' => $e->getMessage()], 400);
         }
     }
+
+    public function deleteByIdSesion($idSesion)
+    {
+        try {
+            Gate::authorize('delete', AsistenciaMiembro::class);
+            $asistenciaMiembro = AsistenciaMiembro::where('SESSION_IDSESION', '=', $idSesion);
+
+            $asistenciaMiembro->delete();
+
+            return response()->json(['message' => 'Asistencia eliminada correctamente'], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'No se pudo eliminar la asistencia', 'description' => $e->getMessage()], 404);
+        }
+    }
 }

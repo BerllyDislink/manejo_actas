@@ -24,7 +24,7 @@ class sesion_controller extends Controller
 
             $this->authorize('viewAny', Sesion::class);
 
-            $sesion = Sesion::orderByDesc('IDSESION')->paginate(6);
+            $sesion = Sesion::with('actas')->orderByDesc('IDSESION')->paginate(6);
             $data = [
                 'sesion' => $sesion,
                 'status' => 200
@@ -89,7 +89,7 @@ class sesion_controller extends Controller
         try{
             $this->authorize('view', Sesion::class);
 
-            $sesion = Sesion::find($IDSESION);
+            $sesion = Sesion::with('actas')->find($IDSESION);
             if(!$sesion){
                 $data =[
                     'message' => 'Sesion no encontrada',

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\EncargadosTarea;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class EncargadosTareaController extends Controller
 {
@@ -54,27 +56,27 @@ class EncargadosTareaController extends Controller
         $encargado = EncargadosTarea::where('MIEMBROS_IDMIEMBROS', $miembroId)
                                       ->where('TAREAS_IDTAREAS', $tareaId)
                                       ->first();
-    
+
         // Verifica si se encontró el registro
         if (!$encargado) {
             return response()->json(['message' => 'Encargado de tarea no encontrado'], 404);
         }
-    
+
         // Valida el estado si se está enviando
         $request->validate([
             'ESTADO' => 'sometimes|required|in:sin comenzar,en curso,finalizado'
         ]);
-    
+
         // Actualiza solo los campos que se envían
         $encargado->update($request->only(['ESTADO']));
-    
+
         // Devuelve la respuesta con el encargado actualizado
         return response()->json($encargado);
     }
-    
-    
-    
-    
+
+
+
+
 
     // Eliminar un encargado de tarea
     public function destroy($miembroId, $tareaId)
@@ -82,13 +84,31 @@ class EncargadosTareaController extends Controller
         $deleted = EncargadosTarea::where('MIEMBROS_IDMIEMBROS', $miembroId)
                                     ->where('TAREAS_IDTAREAS', $tareaId)
                                     ->delete();
-    
+
         if ($deleted) {
             return response()->json(['message' => 'Encargado de tarea eliminado correctamente.']);
         } else {
             return response()->json(['message' => 'No se encontró el encargado de tarea.'], 404);
         }
     }
-    
+
+
+    public function deleteByIdTarea($tareaId)
+    {
+        try{
+            Gate::authorize('delete', EncargadosTarea::class);
+            $deleted = EncargadosTarea::where('TAREAS_IDTAREAS', $tareaId)->delete();
+
+            if ($deleted) {
+                return response()->json(['message' => 'Encargado de tarea eliminado correctamente.']);
+            } else {
+                return response()->json(['message' => 'No se encontró el encargado de tarea.'], 404);
+            }
+        }catch (Exception $e){
+            response()->json(['message' => 'No se pudo eliminar el encargado de la tarea', 'description' => $e->getMessage()], 404);
+        }
+
+    }
+
 }
 

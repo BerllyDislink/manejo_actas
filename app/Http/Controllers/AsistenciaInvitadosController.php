@@ -120,4 +120,21 @@ class AsistenciaInvitadosController extends Controller
         }
 
     }
+
+    public function deleteByIdSesion($idSesion)
+    {
+        try{
+            Gate::authorize('delete', AsistenciaInvitado::class);
+
+            $asistenciaInvitado = AsistenciaInvitado::where('SESION_IDSESION', '=', $idSesion);
+
+            $asistenciaInvitado->delete();
+
+            return response()->json(['message' => 'Asistencia eliminada correctamente']);
+
+        }catch (Exception $e){
+            return response()->json(['message' => 'No se pudo eliminar la asistencia', 'description' => $e->getMessage()],404);
+        }
+
+    }
 }

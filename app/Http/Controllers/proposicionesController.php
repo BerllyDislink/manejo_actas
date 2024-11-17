@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use App\Models\Proposicione;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class proposicionesController extends Controller
@@ -166,6 +167,18 @@ class proposicionesController extends Controller
             return response()->json(['error' => $e->getMessage()], 401);
         }
 
+    }
+
+    public function deleteByIdSesion ($IDSESION)
+    {
+        try {
+            Gate::authorize('delete', Proposicione::class);
+            $proposicion = Proposicione::where('SESION_IDSESION', '=', $IDSESION);
+            $proposicion->delete();
+            return response()->json(['message'=>'proposicion eliminada correactamente'], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'No fue posible eliminar la propocision de esta sesion', 'description' => $e->getMessage() ], 404);
+        }
     }
 
 }

@@ -129,6 +129,19 @@ class ActaController extends Controller
             return response()->json(['Message' => "Error al eliminar el acta", 'error' => $e],401);
         }
     }
+
+    public function deleteByIdSesion($IDSESION)
+    {
+        try {
+            Gate::authorize('delete', Acta::class);
+            $acta = acta::where('SESION_IDSESION', '=', $IDSESION);
+            $acta->delete();
+            return response()->json(['message' => 'El acta ha sido eliminada'],200);
+        }catch (Exception $e){
+            return response()->json(['message' => "Error al eliminar el acta", 'description' => $e->getMessage()],401);
+        }
+    }
+
     public function aprobarActaAnterior(Request $request, $id)
     {
         // Check if id is valid
