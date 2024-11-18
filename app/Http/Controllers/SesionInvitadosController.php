@@ -6,6 +6,8 @@ use App\Models\AsistenciaInvitado;
 use App\Models\AsistenciaMiembro;
 use App\Models\Sesion;
 use App\Models\User;
+use Exception;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -100,5 +102,28 @@ class SesionInvitadosController extends Controller
         $listInvitedToSession = compact($memberInviteToSesion, $guestInviteToSesion);
         return response()->json($listInvitedToSession);
 
+    }
+
+    public function getAsistenciaMiembrosByIdSesionAndStatus ($idSesion, $estado)
+    {
+        try{
+            Gate::authorize('viewAny', AsistenciaMiembro::class);
+            $miembro =  QueryBuilder::for(User::class)
+                ->select('users.id as user_id', 'miembros.IDMIEMBRO as miembro_id', 'sesion.IDSESION as sesion_id', 'miembros.NOMBRE as nombre', 'users.email', 'miembros.CARGO as cargo',
+                    'asistencia_miembros.ESTADO_ASISTENCIA as asistencia', 'roles.name as rol')
+                ->join('miembros', 'users.id', '=', 'miembros.user_id')
+                ->join('asistencia_miembros', 'miembros.IDMIEMBRO', '=', 'asistencia_miembros.MIEMBRO_IDMIEMBRO')
+                ->join('sesion', 'asistencia_miembros.SESSION_IDSESION' , '=' , 'sesion.IDSESION')
+                ->join('model_has_roles' , 'model_has_roles.model_id', '=', 'users.id')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('asistencia_miembros.SESSION_IDSESION', '=', $idSesion)
+                ->where('asistencia_miembros.ESTADO_ASISTENCIA', '=', $estado)
+                ->get();
+
+
+            return response()->json($miembro);
+        }catch (Exception $e){
+            return response()->json(['message' => 'no se logro obtener el registro consultado', 'description' => $e->getMessage()], 404);
+        }
     }
 }
