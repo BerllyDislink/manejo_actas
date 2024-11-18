@@ -6,6 +6,7 @@ use App\Http\Controllers\AsistenciaInvitadosController;
 use App\Http\Controllers\AsistenciaMiembrosController;
 use App\Http\Controllers\DescripcionController;
 use App\Http\Controllers\EncargadosTareaController;
+use App\Http\Controllers\EncargadosTareaMiembrosController;
 use App\Http\Controllers\InvitadosController;
 use App\Http\Controllers\MiembrosController;
 use App\Http\Controllers\ParticipantesController;
@@ -128,6 +129,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/encargados_tarea/update/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'update']);
     Route::delete('encargados_tarea/delete/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'destroy']);
     Route::delete('encargados_tarea/deleteByTarea/{tareaId}', [EncargadosTareaController::class, 'deleteByIdTarea']);
+
+    //Encargados tarea lista
+    Route::get('/EncargadoListaTarea/{IDSESION}',[EncargadosTareaMiembrosController::class, 'getMemberInvitedToSesion']);
 
 });
 
