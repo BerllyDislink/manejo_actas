@@ -45,26 +45,26 @@ class AsistenciaMiembrosController extends Controller
         try {
 
             DB::transaction(function () use ($validatedRequest) {
-               collect($validatedRequest['listMiembros'])->map(function ($miembro) use ($validatedRequest) {
+                collect($validatedRequest['listMiembros'])->map(function ($miembro) use ($validatedRequest) {
 
 
-                   $newAsistenciaMiembro = new AsistenciaMiembro();
-                   $newAsistenciaMiembro->SESSION_IDSESION = $validatedRequest['idSesion'];
-                   $newAsistenciaMiembro->MIEMBRO_IDMIEMBRO = $miembro["id_miembro"];
-                   $newAsistenciaMiembro->ESTADO_ASISTENCIA = 'pendiente';
-                   $newAsistenciaMiembro->save();
+                    $newAsistenciaMiembro = new AsistenciaMiembro();
+                    $newAsistenciaMiembro->SESSION_IDSESION = $validatedRequest['idSesion'];
+                    $newAsistenciaMiembro->MIEMBRO_IDMIEMBRO = $miembro["id_miembro"];
+                    $newAsistenciaMiembro->ESTADO_ASISTENCIA = 'pendiente';
+                    $newAsistenciaMiembro->save();
 
-                   $email = $newAsistenciaMiembro->miembro()->with('users')->get()->pluck('users.email');
-                   $miembro = $newAsistenciaMiembro->miembro()->get();
-                   $sesion = $newAsistenciaMiembro->sesion()->get();
+                    $email = $newAsistenciaMiembro->miembro()->with('users')->get()->pluck('users.email');
+                    $miembro = $newAsistenciaMiembro->miembro()->get();
+                    $sesion = $newAsistenciaMiembro->sesion()->get();
 
-                   Mail::to($email[0])->send(new MeetingInvitationMailable($miembro[0], $sesion[0], 'Invitacion a reunion'));
+                    Mail::to($email[0])->send(new MeetingInvitationMailable($miembro[0], $sesion[0], 'Invitacion a reunion'));
                 });
 
             });
 
             return response()->json(['message' => 'Invitaciones asignadas (Miembros)'], 201);
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json(['message' => 'Error al enviar las invitaciones', 'description' => $e->getMessage()], 400);
         }
     }
@@ -95,14 +95,14 @@ class AsistenciaMiembrosController extends Controller
             $validatedRequest = $request->validated();
 
             $asistenciaMiembro = AsistenciaMiembro::where('SESSION_IDSESION', '=', $idSesion)
-                ->where('MIEMBRO_IDMIEMBRO' , '=', $idMiembro);
+                ->where('MIEMBRO_IDMIEMBRO', '=', $idMiembro);
 
             $asistenciaMiembro->update([
                 'ESTADO_ASISTENCIA' => $validatedRequest['estadoAsistencia']
             ]);
 
             return response()->json(['message' => 'Asistencia actualizada correctamente'], 200);
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json(['message' => 'No se pudo actualizar la asistencia', 'description' => $e->getMessage()], 400);
         }
     }
@@ -115,15 +115,16 @@ class AsistenciaMiembrosController extends Controller
         try {
             Gate::authorize('delete', AsistenciaMiembro::class);
             $asistenciaMiembro = AsistenciaMiembro::where('SESSION_IDSESION', '=', $idSesion)
-                ->where('MIEMBRO_IDMIEMBRO' , '=', $idMiembro);
+                ->where('MIEMBRO_IDMIEMBRO', '=', $idMiembro);
 
             $asistenciaMiembro->delete();
 
             return response()->json(['message' => 'Asistencia eliminada correctamente'], 200);
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json(['message' => 'No se pudo eliminar la asistencia', 'description' => $e->getMessage()], 400);
         }
     }
+
 
     public function deleteByIdSesion($idSesion)
     {
@@ -138,4 +139,6 @@ class AsistenciaMiembrosController extends Controller
             return response()->json(['message' => 'No se pudo eliminar la asistencia', 'description' => $e->getMessage()], 404);
         }
     }
+
+
 }

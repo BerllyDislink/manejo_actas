@@ -121,6 +121,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //Asistencias a la reunion
     Route::get('/memberInvitedToSesion/{IDSESION}', [SesionInvitadosController::class, 'getMemberInvitedToSesion']);
     Route::get('/guestInvitedToSesion/{IDSESION}', [SesionInvitadosController::class, 'getGuestInvitedToSesion']);
+    Route::get('/memberInvitedToSesionByStatus/{idSesion}/{estado}', [SesionInvitadosController::class, 'getAsistenciaMiembrosByIdSesionAndStatus']);
 
     Route::get('/sesion/MiembrosInvitados',[sesion_controller::class, 'showInviteToSesion']);
     Route::get('encargados_tarea/all', [EncargadosTareaController::class, 'index']);
