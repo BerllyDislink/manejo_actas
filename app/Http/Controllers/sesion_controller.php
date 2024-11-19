@@ -25,7 +25,7 @@ class sesion_controller extends Controller
             $this->authorize('viewAny', Sesion::class);
 
             $sesion = Sesion::with('actas', 'orden_sesions', 'asistencia_miembros',
-                'asistencia_invitados', 'proposiciones', 'solicituds', 'tareas', 'tareas.encargado_tareas')->orderByDesc('IDSESION')->paginate(6);
+                'asistencia_invitados', 'proposiciones', 'solicituds', 'solicituds.descripcion', 'tareas', 'tareas.encargados_tareas')->orderByDesc('IDSESION')->paginate(6);
             $data = [
                 'sesion' => $sesion,
                 'status' => 200
