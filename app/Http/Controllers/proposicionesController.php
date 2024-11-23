@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use App\Http\Resources\proposicionResource;
 use App\Models\Proposicione;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
@@ -12,21 +13,24 @@ use Illuminate\Support\Facades\Validator;
 class proposicionesController extends Controller
 {
     // para obtener los datos de sesion
-    public function index(){
+public function index() {
+    try {
+        $this->authorize('viewAny', Proposicione::class);
 
-        try {
-            $this->authorize('viewAny', Proposicione::class);
+        // Cargar las relaciones correctamente
+        $proposiciones = Proposicione::with(['miembro.users','sesion'])->orderByDesc('ID_PROPOSICIONES')->paginate(6);
 
-            $proposiciones = Proposicione::all();
-            $data = [
-                'proposiciones' => $proposiciones,
-                'status' => 200
-            ];
-            return response()->json($data, 200);
-        }catch (Exception | AuthenticationException $e){
-            return response()->json(['error' => $e->getMessage()], 401);
-        }
+        return response()->json(ProposicionResource::collection($proposiciones), 200);
+    } catch (Exception | AuthorizationException $e) {
+        return response()->json([
+            'message' => 'Error al consultar las proposiciones',
+            'error' => $e->getMessage()
+        ], 500); // Cambié el código de error a 500 para capturar errores de servidor
     }
+}
+
+
+
 
     //para almancear las sesiones
 
@@ -37,7 +41,7 @@ class proposicionesController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'DESCRIPCION' => 'required',
-                'DECISION' => 'required',
+                'DESICION' => 'required',
                 'MIEMBRO_IDMIEMBRO' => 'required',
                 'SESION_IDSESION' => 'required'
             ]);
@@ -51,7 +55,7 @@ class proposicionesController extends Controller
             }
             $proposiciones = Proposicione::create([
                 'DESCRIPCION' => $request->DESCRIPCION,
-                'DECISION' => $request->DECISION,
+                'DESICION' => $request->DESICION,
                 'MIEMBRO_IDMIEMBRO' => $request->MIEMBRO_IDMIEMBRO,
                 'SESION_IDSESION' => $request->SESION_IDSESION
             ]);
@@ -137,7 +141,7 @@ class proposicionesController extends Controller
             }
             $validator = Validator::make($request->all(),[
                 'DESCRIPCION' => 'required',
-                'DECISION' => 'required',
+                'DESICION' => 'required',
                 'MIEMBRO_IDMIEMBRO' => 'required',
                 'SESION_IDSESION' => 'required'
             ]);
@@ -151,7 +155,7 @@ class proposicionesController extends Controller
 
             }
             $proposiciones->DESCRIPCION = $request ->DESCRIPCION;
-            $proposiciones->DECISION = $request ->DECISION;
+            $proposiciones->DESICION = $request ->DESICION;
             $proposiciones->MIEMBRO_IDMIEMBRO = $request->MIEMBRO_IDMIEMBRO;
             $proposiciones->SESION_IDSESION = $request->SESION_IDSESION;
 
@@ -180,5 +184,91 @@ class proposicionesController extends Controller
             return response()->json(['message' => 'No fue posible eliminar la propocision de esta sesion', 'description' => $e->getMessage() ], 404);
         }
     }
+    public function actualizarDecision(Request $request, $ID_PROPOSICIONES)
+{
+    // Validar que el ID es válido
+    if ($ID_PROPOSICIONES <= 0) {
+        return response()->json(['message' => 'El ID de la proposición debe ser mayor que 0'], 404);
+    }
+
+    // Validar el campo 'DECISION'
+    $validatedData = $request->validate([
+        'DESICION' => 'required|in:aprobada,rechazada,pendiente'
+    ]);
+
+    try {
+        // Autorizar la acción
+        $this->authorize('update', Proposicione::class);
+
+        // Buscar la proposición por ID
+        $proposicion = Proposicione::find($ID_PROPOSICIONES);
+
+        if (!$proposicion) {
+            return response()->json([
+                'message' => 'Proposición no encontrada',
+                'status' => 404
+            ], 404);
+        }
+
+        // Actualizar el campo 'DECISION'
+        $proposicion->DESICION = $validatedData['DESICION'];
+        $proposicion->save();
+
+        return response()->json([
+            'message' => 'La decisión de la proposición ha sido actualizada correctamente.',
+            'proposicion' => $proposicion,
+            'status' => 200
+        ], 200);
+
+    } catch (Exception $e) {
+        return response()->json([
+            'message' => 'No se encontró la proposición o hubo un error al actualizar la decisión.',
+            'error' => $e->getMessage()
+        ], 500); // Error interno del servidor
+    }
+}
+
+public function getProposicionesBySesion($IDSESION)
+{
+    try {
+        // Autorizar la acción
+        Gate::authorize('view', Proposicione::class);
+
+        // Cargar las relaciones 'miembro.users' y 'sesion'
+        $proposiciones = Proposicione::with(['miembro.users', 'sesion'])
+            ->where('SESION_IDSESION', '=', $IDSESION)
+            ->orderByDesc('ID_PROPOSICIONES')
+            ->paginate(6);
+
+        // Verificar si no hay proposiciones para esa sesión
+        if ($proposiciones->isEmpty()) {
+            return response()->json([
+                'message' => 'No se encontraron proposiciones para esta sesión'
+            ], 404);
+        }
+
+        // Retornar los datos con el recurso
+        return response()->json([
+            'data' => $proposiciones->map(function($proposicion) {
+                return [
+                    'ID_PROPOSICIONES' => $proposicion->ID_PROPOSICIONES,
+                    'DESCRIPCION' => $proposicion->DESCRIPCION,
+                    'DESICION' => $proposicion->DESICION,
+                    'MIEMBRO_IDMIEMBRO' => $proposicion->miembro->IDMIEMBRO,
+                    'NOMBRE_MIEMBRO' => $proposicion->miembro->users->name,
+                    'EMAIL_MIEMBRO' => $proposicion->miembro->users->email,
+                ];
+            })
+        ], 200);
+    } catch (Exception | AuthorizationException $e) {
+        return response()->json([
+            'message' => 'Error al consultar las proposiciones',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+
+
 
 }
