@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class OrdenSesion
- * 
+ *
  * @property int $ID_ORDEN_SESION
  * @property string $TEMA
  * @property string $DESCRIPCION
  * @property int $SESION_IDSESION
- * 
+ *
  * @property Sesion $sesion
  *
  * @package App\Models
@@ -33,7 +33,8 @@ class OrdenSesion extends Model
 	protected $fillable = [
 		'TEMA',
 		'DESCRIPCION',
-		'SESION_IDSESION'
+		'SESION_IDSESION',
+        'orden'
 	];
 
 	public function sesion()

@@ -39,7 +39,8 @@ class orden_sesion_controller extends Controller
             $validator = Validator::make($request->all(), [
                 'TEMA' => 'required',
                 'DESCRIPCION' => 'required',
-                'SESION_IDSESION' => 'required'
+                'SESION_IDSESION' => 'required',
+                'orden' => 'required',
             ]);
             if ($validator->fails()) {
                 $data = [
@@ -52,11 +53,12 @@ class orden_sesion_controller extends Controller
             $ordensesion = OrdenSesion::create([
                 'TEMA' => $request->TEMA,
                 'DESCRIPCION' => $request->DESCRIPCION,
-                'SESION_IDSESION' => $request->SESION_IDSESION
+                'SESION_IDSESION' => $request->SESION_IDSESION,
+                'orden' => $request->orden
             ]);
             if (!$ordensesion) {
                 $data = [
-                    'message' => 'Error al crear sesion',
+                    'message' => 'Error al crear orden de la sesion',
                     'status' => 500
                 ];
                 return response()->json($data, 500);
@@ -68,7 +70,7 @@ class orden_sesion_controller extends Controller
             return response()->json($data, 201);
 
         }catch (Exception | AuthenticationException $e){
-            return response()->json(['error' => $e->getMessage()], 401);
+            return response()->json(['message' => 'no se pudo guardar el orden de la sesion','description' => $e->getMessage()], 401);
         }
     }
 
@@ -143,7 +145,8 @@ class orden_sesion_controller extends Controller
             $validator = Validator::make($request->all(),[
                 'TEMA' => 'required',
                 'DESCRIPCION' => 'required',
-                'SESION_IDSESION' => 'required'
+                'SESION_IDSESION' => 'required',
+                'orden' => 'required',
             ]);
             if($validator->fails()){
                 $data = [
@@ -157,6 +160,7 @@ class orden_sesion_controller extends Controller
             $ordensesion->TEMA = $request ->TEMA;
             $ordensesion->DESCRIPCION = $request ->DESCRIPCION;
             $ordensesion->SESION_IDSESION = $request->SESION_IDSESION;
+            $ordensesion->orden = $request->orden;
 
             $ordensesion->save();
 
@@ -192,6 +196,7 @@ class orden_sesion_controller extends Controller
                 'TEMA' => 'max:255',
                 'DESCRIPCION' => 'max:255',
                 'SESION_ORDENSESION' => 'int',
+                'orden' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -212,6 +217,9 @@ class orden_sesion_controller extends Controller
             if ($request->has('SESION_IDSESION')) {
                 $ordensesion->SESION_IDSESION = $request->SESION_IDSESION;
             }
+            if($request->has('orden')){
+                $ordensesion->orden = $request->orden;
+            }
 
             $ordensesion->save();
 
@@ -227,15 +235,38 @@ class orden_sesion_controller extends Controller
         }
     }
 
-        public function deleteByIdSesion($IDSESION)
-        {
-            try{
-                Gate::authorize('delete', OrdenSesion::class);
-                OrdenSesion::where('SESION_IDSESION', '=', $IDSESION)->delete();
-                return response()->json(['message' => 'Item de orden se sesion eliminado correctamente'], 200);
-            }catch (Exception $e){
-                return response()->json(['message' => 'No se pudo eliminar el item del orden de sesion', 'description' => $e->getMessage()], 404);
-            }
+
+    public function getOrderSesionByIdSesion($IDSESION)
+    {
+        try{
+            Gate::authorize('view', OrdenSesion::class);
+            $orden = OrdenSesion::where('SESION_IDSESION', '=', $IDSESION)->orderBy('orden')->paginate(5);
+            return response()->json($orden, 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'no se pudo obtener el orden de esta sesion','description' => $e->getMessage()], 401);
         }
+    }
+
+    public function getOrderSesionByIdSesionNotPaginated($IDSESION)
+    {
+        try{
+            Gate::authorize('view', OrdenSesion::class);
+            $orden = OrdenSesion::where('SESION_IDSESION', '=', $IDSESION)->orderBy('orden')->get();
+            return response()->json($orden, 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'no se pudo obtener el orden de esta sesion','description' => $e->getMessage()], 401);
+        }
+    }
+
+    public function deleteByIdSesion($IDSESION)
+    {
+        try{
+            Gate::authorize('delete', OrdenSesion::class);
+            OrdenSesion::where('SESION_IDSESION', '=', $IDSESION)->delete();
+            return response()->json(['message' => 'Item de orden se sesion eliminado correctamente'], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'No se pudo eliminar el item del orden de sesion', 'description' => $e->getMessage()], 404);
+        }
+    }
 
 }

@@ -90,7 +90,7 @@ class sesion_controller extends Controller
         try{
             $this->authorize('view', Sesion::class);
 
-            $sesion = Sesion::with('actas')->find($IDSESION);
+            $sesion = Sesion::with('actas', 'orden_sesions')->find($IDSESION);
             if(!$sesion){
                 $data =[
                     'message' => 'Sesion no encontrada',

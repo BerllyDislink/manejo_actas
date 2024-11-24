@@ -59,6 +59,8 @@ Route::middleware('auth:sanctum')->group(function () {
     //CRUD Orden sesion
     Route::get('/orden_sesion/all',[orden_sesion_controller::class, 'index']);
     Route::get('/orden_sesion/{id}',[orden_sesion_controller::class, 'show']);
+    Route::get('/orden_sesionBySesion/{IDSESION}', [orden_sesion_controller::class, 'getOrderSesionByIdSesion']);
+    Route::get('/orden_sesionBySesionNotPaginate/{IDSESION}', [orden_sesion_controller::class, 'getOrderSesionByIdSesionNotPaginated']);
     Route::post('/orden_sesion/save',[orden_sesion_controller::class, 'store']);
     Route::put('/orden_sesion/update/{ID_ORDEN_SESION}',[orden_sesion_controller::class, 'update']);
     Route::patch('/orden_sesion/update/{ID_ORDEN_SESION}',[orden_sesion_controller::class, 'update_patch']);
