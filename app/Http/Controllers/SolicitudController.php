@@ -23,12 +23,13 @@ class SolicitudController extends Controller
 
         $solicitudes = QueryBuilder::for(Solicitud::class)
             ->allowedFilters([
+                AllowedFilter::exact('sesion_id', 'SESION_IDSESION'),
                 AllowedFilter::partial('asunto', 'ASUNTO')
             ])
             ->with('sesion', 'solicitante', 'descripcion')
-            ->get();
+            ->paginate(10);
 
-        return SolicitudResource::collection($solicitudes);
+        return SolicitudResource::collection($solicitudes)->resource;
     }
 
     /**
