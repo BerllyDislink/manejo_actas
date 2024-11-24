@@ -22,10 +22,12 @@ class SolicitanteController extends Controller
         $solicitantes = QueryBuilder::for(Solicitante::class)
             ->allowedFilters([
                 AllowedFilter::partial('nombre', 'NOMBRE'),
+                AllowedFilter::exact('email', 'EMAIL'),
+            AllowedFilter::exact('celular', 'CELULAR'),
             ])->get();
 
         return SolicitanteResource::collection($solicitantes);
-    }
+    } 
 
     /**
      * Store a newly created resource in storage.
@@ -84,4 +86,6 @@ class SolicitanteController extends Controller
 
         return response()->noContent();
     }
+
+
 }

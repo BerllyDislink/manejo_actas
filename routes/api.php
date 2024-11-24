@@ -90,8 +90,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/proposicion/{id}',[proposicionesController::class, 'show']);
     Route::post('/proposicion/save', [proposicionesController::class, 'store']);
     Route::put('/proposicion/update/{ID_PROPOSICIONES}',[proposicionesController::class, 'update']);
+    Route::put('/proposicion/decision/{ID_PROPOSICIONES}',[proposicionesController::class, 'actualizarDecision']);
     Route::delete('proposicion/delete/{ID_PROPOSICIONES}',[proposicionesController::class, 'delete']);
     Route::delete('proposicion/deleteBySesion/{IDSESION}',[proposicionesController::class, 'deleteByIdSesion']);
+    Route::get('/proposicionOfSesion/{IDSESION}', [proposicionesController::class, 'getProposicionesBySesion']);
+
 
     //CRUD invitados
 
@@ -119,6 +122,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('solicitantes',  SolicitanteController::class);
     Route::apiResource('descripciones', DescripcionController::class);
     Route::delete('solicitudes/deleteBySession/{IDSESION}', [SolicitudController::class , 'deleteByIdSesion']);
+   
 
     //Asistencias a la reunion
     Route::get('/memberInvitedToSesion/{IDSESION}', [SesionInvitadosController::class, 'getMemberInvitedToSesion']);
