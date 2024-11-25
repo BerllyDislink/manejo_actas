@@ -18,6 +18,7 @@ use App\Policies\MiembroPolicy;
 use App\Policies\OrdenSesionPolicy;
 use App\Policies\ProposicionePolicy;
 use App\Policies\SessionPolicy;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -44,6 +45,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(AsistenciaInvitado::class, AsistenciaInvitadoPolicy::class);
         Gate::policy(Proposicione::class, ProposicionePolicy::class);
         Gate::policy(EncargadosTarea::class, EncargadosTareaPolicy::class);
+
+        
 
     }
 }
