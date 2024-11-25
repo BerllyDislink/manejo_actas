@@ -38,7 +38,7 @@ class Sesion extends Model
 	public $timestamps = false;
 
 	protected $casts = [
-		'FECHA' => 'datetime',
+		'FECHA' => 'date',
 		'HORARIO_INICIO' => 'datetime',
 		'HORARIO_FINAL' => 'datetime'
 	];
@@ -55,8 +55,15 @@ class Sesion extends Model
 	   // Mutator para FECHA
 	   public function getFECHAAttribute($value)
 	   {
-		   return Carbon::parse($value)->setTimezone('America/Bogota')->toDateString();
+		   return Carbon::parse($value)->setTimezone('America/Bogota')->format('d/m/Y');
 	   }
+
+        public function setFECHAAttribute($value)
+        {
+            $this->attributes['FECHA'] = Carbon::createFromFormat('d/m/Y', $value)
+                ->setTimezone('America/Bogota')
+                ->format('Y-m-d');
+        }
 
 	   // Mutator para HORARIO_INICIO
 	   public function getHORARIOINICIOAttribute($value)

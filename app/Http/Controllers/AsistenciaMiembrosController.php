@@ -7,11 +7,13 @@ use App\Http\Requests\UpdateAsistenciaRequest;
 use App\Http\Resources\AsistenciaMiembroResource;
 use App\Mail\MeetingInvitationMailable;
 use App\Models\AsistenciaMiembro;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class AsistenciaMiembrosController extends Controller
 {
@@ -44,14 +46,21 @@ class AsistenciaMiembrosController extends Controller
 
         try {
 
-            DB::transaction(function () use ($validatedRequest) {
-                collect($validatedRequest['listMiembros'])->map(function ($miembro) use ($validatedRequest) {
+            $listMiembros = QueryBuilder::for(User::class)
+                ->select('users.id', 'miembros.IDMIEMBRO as id_miembro' ,'users.email', 'miembros.NOMBRE', 'miembros.CARGO', 'roles.name as rol')
+                ->join('miembros', 'users.id', '=', 'miembros.user_id')
+                ->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                ->get();
+
+            DB::transaction(function () use ($validatedRequest, $listMiembros) {
+                collect($listMiembros)->map(function ($miembro) use ($validatedRequest) {
 
 
                     $newAsistenciaMiembro = new AsistenciaMiembro();
                     $newAsistenciaMiembro->SESSION_IDSESION = $validatedRequest['idSesion'];
                     $newAsistenciaMiembro->MIEMBRO_IDMIEMBRO = $miembro["id_miembro"];
-                    $newAsistenciaMiembro->ESTADO_ASISTENCIA = 'pendiente';
+                    $newAsistenciaMiembro->ESTADO_ASISTENCIA = 'Pendiente';
                     $newAsistenciaMiembro->save();
 
                     $email = $newAsistenciaMiembro->miembro()->with('users')->get()->pluck('users.email');

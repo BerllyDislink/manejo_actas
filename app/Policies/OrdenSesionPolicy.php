@@ -19,7 +19,7 @@ class OrdenSesionPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Session $session): bool
+    public function view(User $user): bool
     {
         return $user->hasAnyRole('coordinador', 'secretario', 'miembro', 'invitado');
     }
@@ -35,7 +35,7 @@ class OrdenSesionPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Session $session): bool
+    public function update(User $user): bool
     {
         return $user->hasAnyRole('coordinador', 'secretario');
     }
@@ -43,7 +43,7 @@ class OrdenSesionPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Session $session): bool
+    public function delete(User $user): bool
     {
         return $user->hasAnyRole('coordinador', 'secretario');
     }
