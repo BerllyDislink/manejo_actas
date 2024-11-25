@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ApplicationUpdated;
+use App\Events\SendApplicationUpdateMail;
 use App\Http\Requests\StoreSolicitudRequest;
 use App\Http\Requests\UpdateSolicitudRequest;
 use App\Http\Resources\SolicitudResource;
 use App\Models\Solicitud;
 use Exception;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -51,6 +54,8 @@ class SolicitudController extends Controller
 
         $solicitud->save();
 
+        event(new ApplicationUpdated($solicitud->ID_SOLICITUD, 'Se ha ingresado tu solicitud - Act Manager'));
+
         return new SolicitudResource($solicitud);
     }
 
@@ -82,6 +87,8 @@ class SolicitudController extends Controller
         $solicitude->DESCRIPCION_IDDESCRIPCION   = $request->input('descripcion_id');
 
         $solicitude->save();
+
+        event(new ApplicationUpdated($solicitude->ID_SOLICITUD, 'Se ha actualizado tu solicitud - Act Manager'));
 
         return response()->json(['data' => new SolicitudResource($solicitude)]);
     }
