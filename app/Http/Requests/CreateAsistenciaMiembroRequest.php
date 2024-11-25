@@ -18,7 +18,6 @@ class CreateAsistenciaMiembroRequest extends FormRequest
     {
         return [
             'idSesion' => 'required|exists:sesion,IDSESION',
-            'listMiembros' => 'required',
         ];
     }
 
@@ -27,7 +26,6 @@ class CreateAsistenciaMiembroRequest extends FormRequest
         return [
           'idSesion.required' => 'El id de la sesion no ha sido proporcionado',
           'idSesion.exists' => 'El id de la sesion proporcionada no existe',
-          'listMiembros.required' => 'debe proporcionar al menos un miembro',
         ];
     }
 
