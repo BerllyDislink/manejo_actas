@@ -18,7 +18,7 @@ public function index() {
         $this->authorize('viewAny', Proposicione::class);
 
         // Cargar las relaciones correctamente
-        $proposiciones = Proposicione::with(['miembro.users','sesion'])->orderByDesc('ID_PROPOSICIONES')->paginate(6);
+        $proposiciones = Proposicione::with(['sesion'])->orderByDesc('ID_PROPOSICIONES')->paginate(6);
 
         return response()->json(ProposicionResource::collection($proposiciones), 200);
     } catch (Exception | AuthorizationException $e) {
@@ -248,18 +248,7 @@ public function getProposicionesBySesion($IDSESION)
         }
 
         // Retornar los datos con el recurso
-        return response()->json([
-            'data' => $proposiciones->map(function($proposicion) {
-                return [
-                    'ID_PROPOSICIONES' => $proposicion->ID_PROPOSICIONES,
-                    'DESCRIPCION' => $proposicion->DESCRIPCION,
-                    'DESICION' => $proposicion->DESICION,
-                    'MIEMBRO_IDMIEMBRO' => $proposicion->miembro->IDMIEMBRO,
-                    'NOMBRE_MIEMBRO' => $proposicion->miembro->users->name,
-                    'EMAIL_MIEMBRO' => $proposicion->miembro->users->email,
-                ];
-            })
-        ], 200);
+        return response()->json($proposiciones, 200);
     } catch (Exception | AuthorizationException $e) {
         return response()->json([
             'message' => 'Error al consultar las proposiciones',
