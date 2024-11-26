@@ -148,6 +148,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //Encargados tarea lista
     Route::get('/EncargadoListaTarea/{IDSESION}',[EncargadosTareaMiembrosController::class, 'getMemberInvitedToSesion']);
     Route::get('/tareas/TareasNotPaginate/{IDSESION}', [TareaController::class, 'getTareasByIdSesionNotPaginated']);
+    Route::get("/encargadoTareaByIdSesion/{IDSESION}", [EncargadosTareaController::class, 'getEncargadoTareaByIdSesionNotPaginated']);
 
     //actualzación estado encargados_tarea
 

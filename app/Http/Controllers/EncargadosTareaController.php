@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\EncargadosTarea;
+use App\Models\Sesion;
 use Exception;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Miembro;
@@ -134,22 +136,6 @@ public function updateEstadoTarea($idTarea, Request $request)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Eliminar un encargado de tarea
     public function destroy($miembroId, $tareaId)
     {
@@ -179,6 +165,17 @@ public function updateEstadoTarea($idTarea, Request $request)
         }catch (Exception $e){
             response()->json(['message' => 'No se pudo eliminar el encargado de la tarea', 'description' => $e->getMessage()], 404);
         }
+
+    }
+
+    public function getEncargadoTareaByIdSesionNotPaginated($IDSESION)
+    {
+
+            Gate::authorize('view', EncargadosTarea::class);
+            $tarea = Sesion::with('tareas', 'tareas.encargados_tareas.miembro.users')
+                ->where('IDSESION', $IDSESION)
+                ->get();
+            return response()->json(["data" => $tarea], 200);
 
     }
 

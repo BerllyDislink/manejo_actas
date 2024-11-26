@@ -195,7 +195,7 @@ public function getTareasBySession($idSesion)
     public function getTareasByIdSesionNotPaginated($IDSESION)
     {
         try{
-            $tareas = Tarea::with('sesion', 'encargados_tareas', 'encargados_tareas.miembro')
+            $tareas = EncargadosTarea::with('encargados_tareas')
                 ->where('SESION_IDSESION', '=', $IDSESION)
                 ->get();
             return response()->json(['data' => TareaResource::collection($tareas)], 200);

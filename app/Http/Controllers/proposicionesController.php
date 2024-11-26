@@ -265,7 +265,6 @@ public function getProposicionesBySesion($IDSESION)
             Gate::authorize('view', Proposicione::class);
             $proposiciones = Proposicione::with(['miembro.users', 'sesion'])
                 ->where('SESION_IDSESION', '=', $IDSESION)
-                ->orderByDesc('ID_PROPOSICIONES')
                 ->get();
             return response()->json(['data' => $proposiciones], 200);
         }catch (Exception $e){

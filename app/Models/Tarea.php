@@ -37,7 +37,7 @@ class Tarea extends Model
 	protected $fillable = [
 		'DESCRIPCION',
 		'FECHA_ENTREGA',
-		'SESION_IDSESION'
+		'SESION_IDSESION',
 	];
 
 	public function sesion()
