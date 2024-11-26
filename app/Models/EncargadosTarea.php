@@ -18,18 +18,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class EncargadosTarea extends Model
 {
-    // Establece la tabla asociada
     protected $table = 'encargados_tareas';
-
-    // Define la clave primaria si no es 'id'
-
-	public $incrementing = false;
-    protected $primaryKey = null; // Si no hay clave primaria definida, usa null
-
-    // Indica que no se usará la columna de timestamps
+    public $incrementing = false;
+    protected $primaryKey = null; // No hay una clave primaria definida
     public $timestamps = false;
 
-    // Agrega las columnas que se pueden llenar
     protected $fillable = [
         'MIEMBROS_IDMIEMBROS',
         'TAREAS_IDTAREAS',

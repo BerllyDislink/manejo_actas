@@ -148,7 +148,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //actualzación estado encargados_tarea
 
-    Route::put('encargados_tarea/update/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'update']);
+    Route::put('/encargados_tarea/update/{idTarea}', [EncargadosTareaController::class, 'updateEstadoTarea']);
 
 
 });

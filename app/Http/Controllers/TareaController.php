@@ -83,7 +83,7 @@ public function getTareasBySession($idSesion)
             ->join('users', 'users.id', '=', 'miembros.user_id') // Relación miembros -> usuarios
             ->where('sesion.IDSESION', $idSesion) // Filtro por IDSESION
             ->orderByDesc('tareas.IDTAREAS')
-            ->paginate(4); // Obtener todos los resultados sin paginación
+            ->paginate(5); // Obtener todos los resultados sin paginación
 
         return response()->json($tareas);
     } catch (Exception $e) {

@@ -113,27 +113,29 @@ public function update(Request $request, $miembroId, $tareaId)
     return response()->json(['message' => 'No se enviaron datos válidos para actualizar'], 400);
 }
 
-public function updateEstadoTarea($miembroId, $tareaId, Request $request) {
-    // Validar los datos
-    $request->validate([
-        'estadoTarea' => 'required|string'
-    ]);
+public function updateEstadoTarea($idTarea, Request $request)
+{
+    $estado = $request->input('estado');
 
-    // Lógica para actualizar la tarea
-    $encargado = EncargadoTarea::where('MIEMBROS_IDMIEMBROS', $miembroId)
-        ->where('TAREAS_IDTAREAS', $tareaId)
-        ->first();
+    // Buscar el encargado de la tarea solo por el TAREAS_IDTAREAS
+    $encargadoTarea = EncargadosTarea::where('TAREAS_IDTAREAS', $idTarea)->first();
 
-    if (!$encargado) {
-        return response()->json(['error' => 'Tarea o miembro no encontrado'], 404);
+    if ($encargadoTarea) {
+        $encargadoTarea->ESTADO = $estado;
+        $encargadoTarea->save();
+
+        return response()->json([
+            'message' => 'Estado actualizado con éxito',
+            'data' => $encargadoTarea,
+        ], 200);
     }
 
-    // Actualizar estado
-    $encargado->estado = $request->estadoTarea;
-    $encargado->save();
-
-    return response()->json($encargado, 200);
+    return response()->json(['error' => 'Encargado de tarea no encontrado'], 404);
 }
+
+
+
+
 
 
 
