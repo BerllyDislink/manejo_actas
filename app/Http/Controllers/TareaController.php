@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Http\Requests\CreateActaRequest;
 use App\Http\Requests\CreateTareaRequest;
 use App\Http\Requests\UpdateTareaRequest;
 use App\Http\Resources\TareaResource;
+use App\Models\EncargadosTarea;
 use App\Models\Tarea;
+use Spatie\QueryBuilder\QueryBuilder;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -21,6 +24,78 @@ class TareaController extends Controller
         $tasks = Tarea::all();
         return response()->json(TareaResource::collection($tasks), 200);
     }
+
+    public function getTareas()
+{
+    try {
+        // Verificar permisos de acceso
+        Gate::authorize('viewAny', Tarea::class);
+
+        // Consulta para obtener todas las tareas con sus relaciones
+        $tareas = QueryBuilder::for(Tarea::class)
+            ->select(
+                'tareas.IDTAREAS as tarea_id',
+                'tareas.DESCRIPCION as descripcion',
+                'tareas.FECHA_ENTREGA as fecha_entrega',
+                'sesion.IDSESION as sesion_id',
+
+                'encargados_tareas.ESTADO as estado_encargado',
+                'miembros.IDMIEMBRO as miembro_id',
+                'users.email as email_miembro',
+                'miembros.NOMBRE as nombre'
+            )
+            ->join('sesion', 'sesion.IDSESION', '=', 'tareas.SESION_IDSESION') // Relación tarea -> sesión
+            ->join('encargados_tareas', 'encargados_tareas.TAREAS_IDTAREAS', '=', 'tareas.IDTAREAS') // Relación tarea -> encargados
+            ->join('miembros', 'miembros.IDMIEMBRO', '=', 'encargados_tareas.MIEMBROS_IDMIEMBROS') // Relación encargados -> miembros
+            ->join('users', 'users.id', '=', 'miembros.user_id') // Relación miembros -> usuarios
+            ->get();
+
+        // Retornar datos en JSON
+        return response()->json($tareas);
+    } catch (Exception $e) {
+        // Manejo de errores
+        return response()->json(['message' => 'No se logró obtener las tareas', 'description' => $e->getMessage()], 404);
+    }
+}
+
+//por sesion obtener las tareas
+public function getTareasBySession($idSesion)
+{
+    try {
+        // Verificar permisos de acceso
+        Gate::authorize('viewAny', Tarea::class);
+
+        // Filtrar tareas por la sesión especificada y obtener todos los resultados
+        $tareas = QueryBuilder::for(Tarea::class)
+            ->select(
+                'tareas.IDTAREAS as tarea_id',
+                'tareas.DESCRIPCION as descripcion',
+                'tareas.FECHA_ENTREGA as fecha_entrega',
+                'sesion.IDSESION as sesion_id',
+                'encargados_tareas.ESTADO as estado_encargado',
+                'miembros.IDMIEMBRO as miembro_id',
+                'users.email as email_miembro',
+                'miembros.NOMBRE as nombre'
+            )
+            ->join('sesion', 'sesion.IDSESION', '=', 'tareas.SESION_IDSESION') // Relación tarea -> sesión
+            ->join('encargados_tareas', 'encargados_tareas.TAREAS_IDTAREAS', '=', 'tareas.IDTAREAS') // Relación tarea -> encargados
+            ->join('miembros', 'miembros.IDMIEMBRO', '=', 'encargados_tareas.MIEMBROS_IDMIEMBROS') // Relación encargados -> miembros
+            ->join('users', 'users.id', '=', 'miembros.user_id') // Relación miembros -> usuarios
+            ->where('sesion.IDSESION', $idSesion) // Filtro por IDSESION
+            ->orderByDesc('tareas.IDTAREAS')
+            ->paginate(4); // Obtener todos los resultados sin paginación
+
+        return response()->json($tareas);
+    } catch (Exception $e) {
+        return response()->json(['message' => 'No se logró obtener las tareas', 'description' => $e->getMessage()], 404);
+    }
+}
+
+
+
+
+
+
 
     /**
      * Show the form for creating a new resource.

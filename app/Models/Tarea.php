@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Tarea
- * 
+ *
  * @property int $IDTAREAS
  * @property string $DESCRIPCION
  * @property Carbon $FECHA_ENTREGA
  * @property int $SESION_IDSESION
- * 
+ *
  * @property Sesion $sesion
  * @property Collection|EncargadosTarea[] $encargados_tareas
  *

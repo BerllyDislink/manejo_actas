@@ -79,6 +79,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //CRUD Tareas
     Route::get('tarea/all', [TareaController::class, 'index']);
+
+    //otra vista
+    Route::get('/tareas', [TareaController::class, 'getTareas']);
+    Route::get('/tareas/sesion/{idSesion}', [TareaController::class, 'getTareasBySession']);
+
+
     Route::get('/tarea/{id}',[TareaController::class, 'show']);
     Route::post('/tarea/save', [TareaController::class, 'store']);
     Route::put('/tarea/update/{id}',[TareaController::class, 'update']);
@@ -122,7 +128,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('solicitantes',  SolicitanteController::class);
     Route::apiResource('descripciones', DescripcionController::class);
     Route::delete('solicitudes/deleteBySession/{IDSESION}', [SolicitudController::class , 'deleteByIdSesion']);
-   
+
 
     //Asistencias a la reunion
     Route::get('/memberInvitedToSesion/{IDSESION}', [SesionInvitadosController::class, 'getMemberInvitedToSesion']);
@@ -139,6 +145,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Encargados tarea lista
     Route::get('/EncargadoListaTarea/{IDSESION}',[EncargadosTareaMiembrosController::class, 'getMemberInvitedToSesion']);
+
+    //actualzación estado encargados_tarea
+
+    Route::put('encargados_tarea/update/{miembroId}/{tareaId}', [EncargadosTareaController::class, 'update']);
+
 
 });
 

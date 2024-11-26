@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class EncargadosTarea
- * 
+ *
  * @property string $ESTADO
  * @property int $MIEMBROS_IDMIEMBROS
  * @property int $TAREAS_IDTAREAS
- * 
+ *
  * @property Miembro $miembro
  * @property Tarea $tarea
  *
