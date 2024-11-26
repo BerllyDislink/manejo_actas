@@ -6,6 +6,8 @@ use App\Models\EncargadosTarea;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Miembro;
+
 
 class EncargadosTareaController extends Controller
 {
@@ -50,29 +52,99 @@ class EncargadosTareaController extends Controller
     }
 
     // Actualizar un encargado de tarea existente
-    public function update(Request $request, $miembroId, $tareaId)
-    {
-        // Busca el encargado de tarea usando ambos IDs como clave compuesta
-        $encargado = EncargadosTarea::where('MIEMBROS_IDMIEMBROS', $miembroId)
-                                      ->where('TAREAS_IDTAREAS', $tareaId)
-                                      ->first();
 
-        // Verifica si se encontró el registro
-        if (!$encargado) {
-            return response()->json(['message' => 'Encargado de tarea no encontrado'], 404);
+public function update(Request $request, $miembroId, $tareaId)
+{
+    // Buscar si el encargado actual existe en la tabla EncargadosTarea
+    $encargado = EncargadosTarea::where('MIEMBROS_IDMIEMBROS', $miembroId)
+                                 ->where('TAREAS_IDTAREAS', $tareaId)
+                                 ->first();
+
+    // Verificar si el miembro enviado en la solicitud es diferente al miembro actual
+    $nuevoMiembroId = $request->input('MIEMBROS_IDMIEMBROS');
+
+    // Si el encargado ya existe y el miembro no cambia, solo actualizamos el estado
+    if ($encargado) {
+        // Si el miembro no ha cambiado, solo actualizamos el estado
+        if ($miembroId == $nuevoMiembroId) {
+            if ($request->has('ESTADO')) {
+                // Solo actualizamos el estado
+                $encargado->ESTADO = $request->input('ESTADO');
+                $encargado->save();
+                return response()->json($encargado);
+            }
+            return response()->json($encargado);
+        } else {
+            // Si el miembro cambia, eliminamos al encargado anterior
+            $encargado->delete();
+
+            // Si la tarea tiene un encargado anterior y la tarea debe ser eliminada
+            // Verifica si la tarea debe ser eliminada, por ejemplo, si ya no tiene encargados
+            $tarea = Tarea::find($tareaId);
+            if ($tarea) {
+                // Eliminar tarea si ya no tiene encargados
+                if ($tarea->encargadosTarea->isEmpty()) {
+                    $tarea->delete();
+                }
+            }
+        }
+    }
+
+    // Si el miembro está siendo cambiado, verificamos si el nuevo miembro existe
+    if ($nuevoMiembroId) {
+        $miembro = Miembro::find($nuevoMiembroId);
+
+        // Si el nuevo miembro no existe, lanzamos un error
+        if (!$miembro) {
+            return response()->json(['message' => 'Miembro no encontrado'], 404);
         }
 
-        // Valida el estado si se está enviando
-        $request->validate([
-            'ESTADO' => 'sometimes|required|in:sin comenzar,en curso,finalizado'
+        // Crear un nuevo encargado de tarea con el nuevo miembro
+        $nuevoEncargado = EncargadosTarea::create([
+            'MIEMBROS_IDMIEMBROS' => $miembro->IDMIEMBRO,
+            'TAREAS_IDTAREAS' => $tareaId, // Mantener el ID de la tarea
+            'ESTADO' => $request->input('ESTADO', 'sin comenzar'),
         ]);
 
-        // Actualiza solo los campos que se envían
-        $encargado->update($request->only(['ESTADO']));
-
-        // Devuelve la respuesta con el encargado actualizado
-        return response()->json($encargado);
+        return response()->json($nuevoEncargado, 201);
     }
+
+    // Si no se enviaron datos válidos para actualizar
+    return response()->json(['message' => 'No se enviaron datos válidos para actualizar'], 400);
+}
+
+public function updateEstadoTarea($idTarea, Request $request)
+{
+    $estado = $request->input('estado');
+
+    // Buscar el encargado de la tarea solo por el TAREAS_IDTAREAS
+    $encargadoTarea = EncargadosTarea::where('TAREAS_IDTAREAS', $idTarea)->first();
+
+    if ($encargadoTarea) {
+        $encargadoTarea->ESTADO = $estado;
+        $encargadoTarea->save();
+
+        return response()->json([
+            'message' => 'Estado actualizado con éxito',
+            'data' => $encargadoTarea,
+        ], 200);
+    }
+
+    return response()->json(['error' => 'Encargado de tarea no encontrado'], 404);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
