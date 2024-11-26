@@ -238,7 +238,7 @@ public function getProposicionesBySesion($IDSESION)
         $proposiciones = Proposicione::with(['miembro.users', 'sesion'])
             ->where('SESION_IDSESION', '=', $IDSESION)
             ->orderByDesc('ID_PROPOSICIONES')
-            ->paginate(6);
+            ->paginate(4);
 
         // Verificar si no hay proposiciones para esa sesión
         if ($proposiciones->isEmpty()) {
