@@ -105,14 +105,17 @@ class SolicitudController extends Controller
         return response()->noContent();
     }
 
-    public function deleteByIdSesion($IDSESION)
+
+    public function indexNoPaginate ($IDSESION)
     {
         try {
-            Gate::authorize('delete', Solicitud::class);
-            Solicitud::where('SESION_IDSESION'. '=', $IDSESION)->delete();
-            return response()->json(['message' => 'Solicitud Eliminada correctamente.'], 200);
+            Gate::authorize('viewAny', Solicitud::class);
+            $solicitudes =  Solicitud::with('sesion', 'solicitante', 'descripcion')
+            ->where('SESION_IDSESION', '=', $IDSESION)
+            ->get();
+            return response()->json(['data' => $solicitudes], 200);
         }catch (Exception $e){
-            return response()->json(['message' => 'Solicitud No Eliminada.'], 404);
+            return response()->json(['message' => 'Solicitudes no encontradas.'], 400);
         }
     }
 }

@@ -258,6 +258,21 @@ public function getProposicionesBySesion($IDSESION)
 }
 
 
+    public function getProposicionesBySesionNotPaginated($IDSESION)
+
+    {
+        try{
+            Gate::authorize('view', Proposicione::class);
+            $proposiciones = Proposicione::with(['miembro.users', 'sesion'])
+                ->where('SESION_IDSESION', '=', $IDSESION)
+                ->orderByDesc('ID_PROPOSICIONES')
+                ->get();
+            return response()->json(['data' => $proposiciones], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'Propocicion no encontradas.'], 400);
+        }
+
+    }
 
 
 }

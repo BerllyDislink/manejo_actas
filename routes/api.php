@@ -17,7 +17,6 @@ use App\Http\Controllers\SolicitanteController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\TareaController;
 use App\Http\Controllers\proposicionesController;
-use App\Models\Sesion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -94,6 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('proposicion/delete/{ID_PROPOSICIONES}',[proposicionesController::class, 'delete']);
     Route::delete('proposicion/deleteBySesion/{IDSESION}',[proposicionesController::class, 'deleteByIdSesion']);
     Route::get('/proposicionOfSesion/{IDSESION}', [proposicionesController::class, 'getProposicionesBySesion']);
+    Route::get('/proposicionOfSesionNotPaginate/{IDSESION}', [proposicionesController::class, 'getProposicionesBySesionNotPaginated']);
 
 
     //CRUD invitados
@@ -121,12 +121,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('solicitudes',   SolicitudController::class);
     Route::apiResource('solicitantes',  SolicitanteController::class);
     Route::apiResource('descripciones', DescripcionController::class);
-    Route::delete('solicitudes/deleteBySession/{IDSESION}', [SolicitudController::class , 'deleteByIdSesion']);
-   
+    Route::get('solicitudes/All/{IDSESION}', [SolicitudController::class , 'indexNoPaginate']);
+
 
     //Asistencias a la reunion
     Route::get('/memberInvitedToSesion/{IDSESION}', [SesionInvitadosController::class, 'getMemberInvitedToSesion']);
     Route::get('/guestInvitedToSesion/{IDSESION}', [SesionInvitadosController::class, 'getGuestInvitedToSesion']);
+    Route::get('/memberInvitedToSesionNoPaginate/{IDSESION}', [SesionInvitadosController::class, 'getMemberInvitedToSesionNoPaginate']);
+    Route::get('/guestInvitedToSesionNoPaginate/{IDSESION}', [SesionInvitadosController::class, 'getGuestInvitedToSesionNoPaginate']);
     Route::get('/memberInvitedToSesionByStatus/{idSesion}/{estado}', [SesionInvitadosController::class, 'getAsistenciaMiembrosByIdSesionAndStatus']);
 
     Route::get('/sesion/MiembrosInvitados',[sesion_controller::class, 'showInviteToSesion']);
@@ -139,6 +141,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Encargados tarea lista
     Route::get('/EncargadoListaTarea/{IDSESION}',[EncargadosTareaMiembrosController::class, 'getMemberInvitedToSesion']);
+    Route::get('/tareas/TareasNotPaginate/{IDSESION}', [TareaController::class, 'getTareasByIdSesionNotPaginated']);
 
 });
 

@@ -16,6 +16,43 @@ use Spatie\QueryBuilder\QueryBuilder;
 class SesionInvitadosController extends Controller
 {
 
+    public function getMemberInvitedToSesionNoPaginate($IDSESION)
+    {
+        Gate::authorize('view', AsistenciaMiembro::class);
+
+        $memberInviteToSesion = QueryBuilder::for(User::class)
+            ->select('users.id as user_id', 'miembros.IDMIEMBRO as miembro_id', 'miembros.NOMBRE as nombre', 'users.email', 'miembros.CARGO as cargo',
+                'asistencia_miembros.ESTADO_ASISTENCIA as asistencia', 'roles.name as rol')
+            ->join('miembros', 'users.id', '=', 'miembros.user_id')
+            ->join('asistencia_miembros', 'miembros.IDMIEMBRO', '=', 'asistencia_miembros.MIEMBRO_IDMIEMBRO')
+            ->join('sesion', 'asistencia_miembros.SESSION_IDSESION' , '=' , 'sesion.IDSESION')
+            ->join('model_has_roles' , 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('sesion.IDSESION', '=', $IDSESION)
+            ->get();
+
+        return response()->json(['data' => $memberInviteToSesion]);
+    }
+
+    public function getGuestInvitedToSesionNoPaginate($IDSESION){
+
+        Gate::authorize('view', AsistenciaInvitado::class);
+
+        $guestInviteToSesion = QueryBuilder::for(User::class)
+            ->select('users.id as user_id', 'invitados.IDINVITADOS as invitado_id', 'invitados.NOMBRE as nombre', 'users.email', 'invitados.CARGO as cargo',
+                'asistencia_invitado.ESTADO_ASISTENCIA as asistencia', 'roles.name as rol')
+            ->join('invitados', 'users.id', '=', 'invitados.user_id')
+            ->join('asistencia_invitado', 'invitados.IDINVITADOS', '=', 'asistencia_invitado.INIVITADO_IDINVITADO')
+            ->join('sesion', 'asistencia_invitado.SESION_IDSESION' , '=' , 'sesion.IDSESION')
+            ->join('model_has_roles' , 'model_has_roles.model_id', '=', 'users.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('sesion.IDSESION', '=', $IDSESION)
+            ->get();
+
+        return response()->json(['data' => $guestInviteToSesion]);
+
+    }
+
     public function getMemberInvitedToSesion($IDSESION){
 
         Gate::authorize('view', AsistenciaMiembro::class);

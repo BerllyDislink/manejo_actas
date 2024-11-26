@@ -116,4 +116,16 @@ class TareaController extends Controller
             return response()->json(['message' => 'Error al eliminar la tarea','description' => $e->getMessage()], 404);
         }
     }
+
+    public function getTareasByIdSesionNotPaginated($IDSESION)
+    {
+        try{
+            $tareas = Tarea::with('sesion', 'encargados_tareas', 'encargados_tareas.miembro')
+                ->where('SESION_IDSESION', '=', $IDSESION)
+                ->get();
+            return response()->json(['data' => TareaResource::collection($tareas)], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'Solicitudes no encontradas.'], 400);
+        }
+    }
 }
