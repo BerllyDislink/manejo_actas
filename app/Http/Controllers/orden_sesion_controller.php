@@ -249,13 +249,10 @@ class orden_sesion_controller extends Controller
 
     public function getOrderSesionByIdSesionNotPaginated($IDSESION)
     {
-        try{
+
             Gate::authorize('view', OrdenSesion::class);
-            $orden = OrdenSesion::where('SESION_IDSESION', '=', $IDSESION)->orderBy('orden')->get();
+            $orden = OrdenSesion::where('SESION_IDSESION', '=', $IDSESION)->get();
             return response()->json($orden, 200);
-        }catch (Exception $e){
-            return response()->json(['message' => 'no se pudo obtener el orden de esta sesion','description' => $e->getMessage()], 401);
-        }
     }
 
     public function deleteByIdSesion($IDSESION)

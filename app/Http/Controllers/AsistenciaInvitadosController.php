@@ -3,12 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAsistenciaInvitadoRequest;
-use App\Http\Requests\CreateAsistenciaMiembroRequest;
 use App\Http\Requests\UpdateAsistenciaRequest;
 use App\Mail\MeetingInvitationMailable;
 use App\Models\AsistenciaInvitado;
-use http\Env\Response;
-use Illuminate\Http\Request;
+use \Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
@@ -43,6 +41,15 @@ class AsistenciaInvitadosController extends Controller
         try {
             DB::transaction(function () use ($validatedData) {
                 collect($validatedData['listInvitados'])->map(function ($invitado) use ($validatedData) {
+
+                    $existGuest = AsistenciaInvitado::where('INIVITADO_IDINVITADO', $invitado['id_invitado'])
+                        ->where('SESION_IDSESION', $validatedData['idSesion'])
+                        ->exists();
+
+                    if($existGuest) {
+                        throw new \Exception($invitado['NOMBRE']." ya ha sido invitado");
+                    }
+
                     $newAsistenciaInvitado = new AsistenciaInvitado();
                     $newAsistenciaInvitado->SESION_IDSESION = $validatedData['idSesion'];
                     $newAsistenciaInvitado->INIVITADO_IDINVITADO = $invitado['id_invitado'];
@@ -57,7 +64,7 @@ class AsistenciaInvitadosController extends Controller
                 });
             });
             return response()->json(['message' => 'Invitaciones asignadas (Invitados)']);
-        }catch (Exception $e){
+        }catch (Exception $e ){
             return response()->json(['message' => 'Error al enviar las invitaciones', 'description' => $e->getMessage()]);
         }
     }
