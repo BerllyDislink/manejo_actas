@@ -40,6 +40,15 @@ class Tarea extends Model
 		'SESION_IDSESION',
 	];
 
+
+    public function setFechaEntregaAttribute($value){
+        $this->attributes["FECHA_ENTREGA"] = Carbon::parse($value)->setTimezone('America/Bogota');
+    }
+
+    public function getFechaEntregaAttribute($value){
+        return Carbon::parse($value)->setTimezone('America/Bogota')->toDateTimeString();
+    }
+
 	public function sesion()
 	{
 		return $this->belongsTo(Sesion::class, 'SESION_IDSESION');

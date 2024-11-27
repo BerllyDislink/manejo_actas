@@ -120,14 +120,15 @@ public function updateEstadoTarea($idTarea, Request $request)
     $estado = $request->input('estado');
 
     // Buscar el encargado de la tarea solo por el TAREAS_IDTAREAS
-    $encargadoTarea = EncargadosTarea::where('TAREAS_IDTAREAS', $idTarea)->first();
+    $encargadoTarea = EncargadosTarea::where('TAREAS_IDTAREAS', $idTarea);
 
     if ($encargadoTarea) {
-        $encargadoTarea->ESTADO = $estado;
-        $encargadoTarea->save();
+        $encargadoTarea->update(
+            ['ESTADO' => $estado]
+        );
 
         return response()->json([
-            'message' => 'Estado actualizado con éxito',
+            'message' => 'Estado actualizado con exito',
             'data' => $encargadoTarea,
         ], 200);
     }
