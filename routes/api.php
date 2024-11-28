@@ -32,14 +32,11 @@ Route::get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-
+Route::get('/testAPI', [AuthController::class, function () {
+    return response()->json("Hola mundo API ManejoActas");
+}]);
 
 Route::middleware('auth:sanctum')->group(function () {
-
-
-    Route::get('/testAPI', [AuthController::class, function () {
-        return response()->json("Hola mundo API ManejoActas");
-    }]);
 
     Route::get('/profile', [AuthController::class, 'userProfile']);
 
