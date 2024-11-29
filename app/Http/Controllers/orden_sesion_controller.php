@@ -112,16 +112,10 @@ class orden_sesion_controller extends Controller
                 ], 404);
             }
 
-            // Buscar y eliminar el acta asociada con la columna SESION_IDSESION
-            $acta = Acta::where('SESION_IDSESION', $ID_ORDEN_SESION)->first();
-            if ($acta) {
-                $acta->delete();
-            }
-
             $ordensesion->delete();
 
             return response()->json([
-                'message' => 'Orden de la sesión y acta eliminadas',
+                'message' => 'Item de orde de sesion eliminado',
                 'status' => 200
             ], 200);
         }catch (Exception | AuthenticationException $e){
