@@ -5,13 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\AsistenciaMiembro;
 use App\Models\Session;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use App\Models\Sesion;
 use App\Models\acta;
 use App\Models\Miembro;
 use App\Models\Invitado;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Mockery\Exception;
 

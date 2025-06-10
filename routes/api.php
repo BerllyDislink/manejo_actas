@@ -39,6 +39,7 @@ Route::get('/testAPI', [AuthController::class, function () {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/profile', [AuthController::class, 'userProfile']);
+    Route::get('/logout', [AuthController::class, 'logout']);
 
     //CRUD sesion
     Route::post('/sesion/save',[sesion_controller::class, 'store']);
